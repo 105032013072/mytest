@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 
-package com.bosssoft.platform.es.jdbc.helper;
+package com.bosssoft.platform.es.jdbc.builder;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import com.bosssoft.platform.es.jdbc.mate.NullExpression;
 import com.bosssoft.platform.es.jdbc.mate.OrderbyMate;
 import com.bosssoft.platform.es.jdbc.mate.PageMate;
 import com.bosssoft.platform.es.jdbc.model.ConditionExp;
-import com.bosssoft.platform.es.jdbc.model.SqlObj;
+import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 import com.facebook.presto.sql.tree.AllColumns;
 import com.facebook.presto.sql.tree.BetweenPredicate;
 import com.facebook.presto.sql.tree.ComparisonExpression;
@@ -63,49 +63,14 @@ import com.facebook.presto.sql.tree.Table;
  * @author huangxuewen (mailto:huangxuewen@bosssoft.com.cn)
  */
 
-public class SearchConverter {
-	
-	public SqlObj convent(Statement statement,String sql)throws SQLException{
-
-		SqlObj obj=new SqlObj();
-		QueryBody qb=((Query)statement).getQueryBody();
-		
-		obj.setDistinct(conventDistinct(qb));
-		
-		obj.setFrom(conventFrom(qb));
-		
-		obj.setGroupby(conventGroupby(qb));
-		
-		obj.setLimit(conventLimit(sql));
-		
-		obj.setOrderby(conventOrderBy(qb));
-		
-		obj.setSelectItems(conventSlect(qb));
-		
-		
-		Optional<Expression> opwhere=((QuerySpecification)qb).getWhere();
-		if(opwhere.isPresent()){
-			Expression where=opwhere.get();
-			obj.setWhere(conventwhere(where));
-		}
-		
-		Optional<Expression> ophaving=((QuerySpecification)qb).getHaving();
-	    if(ophaving.isPresent()){
-	    	Expression having=ophaving.get();
-			obj.setHaving(conventwhere(having));
-	    }
-	    
-	    return obj;
-	}
-
-
+public class SearchConverterImpl implements SearchConverter{
 
 	/**
 	 * 解析select ...
 	 * @param qb
 	 * @return
 	 */
-	private List<ColumnMate> conventSlect(QueryBody qb) throws SQLException{
+	public  List<ColumnMate> conventSlect(QueryBody qb) throws SQLException{
 		Select select=((QuerySpecification)qb).getSelect();
 		List<SelectItem> list=select.getSelectItems();
 		
@@ -155,7 +120,7 @@ public class SearchConverter {
 	 * @param qb
 	 * @return
 	 */
-	private List<OrderbyMate> conventOrderBy(QueryBody qb) {
+	public List<OrderbyMate> conventOrderBy(QueryBody qb) {
 		List<OrderbyMate> result=new ArrayList<>();
 		
 		List<SortItem> list=((QuerySpecification)qb).getOrderBy();
@@ -178,7 +143,7 @@ public class SearchConverter {
 	 * @param sql
 	 * @return
 	 */
-	private PageMate conventLimit(String sql) {
+	public PageMate conventLimit(String sql) {
 		if(!sql.contains("limit")) return null;
 		String limitStr=sql.substring(sql.indexOf("limit"),sql.length()).replaceAll(" ", "");
 		String str=limitStr.substring(5, limitStr.length());
@@ -194,7 +159,7 @@ public class SearchConverter {
 	 * @param qb
 	 * @return
 	 */
-	private ConditionExp conventwhere(Expression expression) throws SQLException{
+  public ConditionExp conventwhere(Expression expression) throws SQLException{
 		ConditionExp exp=new ConditionExp();
 		
 		if(expression instanceof ComparisonExpression){//不等式
@@ -285,7 +250,7 @@ public class SearchConverter {
 	 * @param qb
 	 * @return
 	 */
-	private List<String> conventGroupby(QueryBody qb) {
+	public List<String> conventGroupby(QueryBody qb) {
 		List<GroupingElement> list=((QuerySpecification)qb).getGroupBy();
 		if(list.size()==0) return null;
 		List<String> result=new ArrayList<>();
@@ -303,7 +268,7 @@ public class SearchConverter {
 	 * @param qb
 	 * @return
 	 */
-	private String conventFrom(QueryBody qb)throws SQLException {
+	public  String conventFrom(QueryBody qb)throws SQLException {
 	  Optional<Relation> op=((QuerySpecification)qb).getFrom();
 		if(op.isPresent()){
 			Table table=(Table) op.get();
@@ -318,7 +283,7 @@ public class SearchConverter {
 	 * @param qb
 	 * @return
 	 */
-	private Boolean conventDistinct(QueryBody qb) {
+	public  Boolean conventDistinct(QueryBody qb) {
 		Select select=((QuerySpecification)qb).getSelect();
 		return select.isDistinct();
 	}

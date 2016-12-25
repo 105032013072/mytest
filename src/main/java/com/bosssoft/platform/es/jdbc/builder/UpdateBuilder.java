@@ -8,11 +8,11 @@
  * Copyright (c) 2001-2016 Bosssoft Co, Ltd.
  * All rights reserved.
  * 
- * Created on 2016年12月22日
+ * Created on 2016年12月25日
  *******************************************************************************/
 
 
-package com.bosssoft.platform.es.jdbc.helper;
+package com.bosssoft.platform.es.jdbc.builder;
 
 /**
  * TODO 此处填写 class 信息
@@ -20,7 +20,7 @@ package com.bosssoft.platform.es.jdbc.helper;
  * @author huangxuewen (mailto:huangxuewen@bosssoft.com.cn)
  */
 
-public class UpdateBuilder {
+public interface UpdateBuilder {
 
 }
 

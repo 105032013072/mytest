@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 
-package com.bosssoft.platform.es.jdbc.helper;
+package com.bosssoft.platform.es.jdbc.builder;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

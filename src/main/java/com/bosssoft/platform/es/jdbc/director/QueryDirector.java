@@ -8,20 +8,28 @@
  * Copyright (c) 2001-2016 Bosssoft Co, Ltd.
  * All rights reserved.
  * 
- * Created on 2016年12月22日
+ * Created on 2016年12月25日
  *******************************************************************************/
 
 
-package com.bosssoft.platform.es.jdbc.helper;
+package com.bosssoft.platform.es.jdbc.director;
+
+import com.bosssoft.platform.es.jdbc.builder.QueryBuilder;
 
 /**
- * TODO 此处填写 class 信息
+ * TODO es的查询体的构建指导类
  *
  * @author huangxuewen (mailto:huangxuewen@bosssoft.com.cn)
  */
 
-public class QueryBuilder {
-
+public class QueryDirector {
+   
+	private QueryBuilder builder;
+	
+	public QueryDirector(QueryBuilder builder){
+		this.builder=builder;
+		
+	}
 }
 
 /*

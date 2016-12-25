@@ -26,7 +26,7 @@ import com.bosssoft.platform.es.jdbc.mate.PageMate;
  * @author huangxuewen (mailto:huangxuewen@bosssoft.com.cn)
  */
 
-public class SqlObj {
+public class SelectSqlObj {
 
 	private Boolean distinct;
 	
