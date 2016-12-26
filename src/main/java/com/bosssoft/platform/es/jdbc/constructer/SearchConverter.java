@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 
-package com.bosssoft.platform.es.jdbc.builder;
+package com.bosssoft.platform.es.jdbc.constructer;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

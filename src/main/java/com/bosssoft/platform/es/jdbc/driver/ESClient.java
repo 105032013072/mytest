@@ -16,9 +16,13 @@ package com.bosssoft.platform.es.jdbc.driver;
 
 import java.net.InetAddress;
 
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +55,19 @@ public class ESClient {
 		}
 		
 	}
+	
+	//查询
+	public void search(QueryBuilder queryBuilder,  AggregationBuilder aggregation,String indexName, String... indexType){
+		SearchRequestBuilder srb=client.prepareSearch(indexName)
+  				.setTypes(indexType)
+  				.setQuery(queryBuilder)
+  				.addAggregation(aggregation);
+  		
+  		System.out.println(srb.toString());
+  		SearchResponse searchResponse =srb.execute().actionGet();
+  		
+	}
+	
 	
 	public void close(){
 		client.close();

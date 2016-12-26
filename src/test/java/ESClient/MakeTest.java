@@ -66,6 +66,24 @@ public class MakeTest {
 				e.printStackTrace();
 			}
 	 }
+	 
+	 
+	 //distinct
+	 @Test
+	 public void test1(){
+		 try {
+			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
+		      	Statement st = con.createStatement();
+		      	ResultSet rs = st.executeQuery("SELECT  distinct user_salary,user_no from user where user_salary>2200");
+		      	while(rs.next()){
+		       		System.out.println("user_salary:"+rs.getFloat("user_salary"));
+		       	 }
+		       	 rs.close();
+		       	 con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	 }
 }
 
 /*

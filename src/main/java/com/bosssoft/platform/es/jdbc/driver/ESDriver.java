@@ -25,7 +25,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bosssoft.platform.es.jdbc.builder.Judger;
+import com.bosssoft.platform.es.jdbc.constructer.Judger;
 
 /**
  * TODO 此处填写 class 信息

@@ -14,7 +14,7 @@
 
 package com.bosssoft.platform.es.jdbc.director;
 
-import com.bosssoft.platform.es.jdbc.builder.UpdateBuilder;
+import com.bosssoft.platform.es.jdbc.constructer.UpdateConstructer;
 
 /**
  * TODO es的更新体的构建指导类
@@ -24,9 +24,9 @@ import com.bosssoft.platform.es.jdbc.builder.UpdateBuilder;
 
 public class UpdateDirector {
 
-	private UpdateBuilder builder;
+	private UpdateConstructer builder;
 	
-	public UpdateDirector(UpdateBuilder builder){
+	public UpdateDirector(UpdateConstructer builder){
 		this.builder=builder;
 	}
 }

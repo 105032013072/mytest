@@ -14,7 +14,11 @@
 
 package com.bosssoft.platform.es.jdbc.director;
 
-import com.bosssoft.platform.es.jdbc.builder.QueryBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+
+import com.bosssoft.platform.es.jdbc.constructer.QueryConstructer;
+import com.bosssoft.platform.es.jdbc.model.QueryBody;
+import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 
 /**
  * TODO es的查询体的构建指导类
@@ -24,10 +28,18 @@ import com.bosssoft.platform.es.jdbc.builder.QueryBuilder;
 
 public class QueryDirector {
    
-	private QueryBuilder builder;
+	private QueryConstructer constructer;
 	
-	public QueryDirector(QueryBuilder builder){
-		this.builder=builder;
+	public QueryDirector(QueryConstructer constructer){
+		this.constructer=constructer;
+		
+	}
+	
+	public  QueryBody constructQuery(SelectSqlObj obj){
+		QueryBody queryBody=new QueryBody();
+		AggregationBuilder aggregationBuilder=constructer.distinctConstruct(obj);
+		queryBody.setAggregationBuilder(aggregationBuilder);
+		return queryBody;
 		
 	}
 }

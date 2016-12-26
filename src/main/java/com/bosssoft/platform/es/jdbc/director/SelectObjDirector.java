@@ -17,7 +17,7 @@ package com.bosssoft.platform.es.jdbc.director;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import com.bosssoft.platform.es.jdbc.builder.SearchConverter;
+import com.bosssoft.platform.es.jdbc.constructer.SearchConverter;
 import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 import com.facebook.presto.sql.tree.Expression;
 import com.facebook.presto.sql.tree.Query;

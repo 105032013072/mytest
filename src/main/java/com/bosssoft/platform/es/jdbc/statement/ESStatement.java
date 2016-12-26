@@ -19,16 +19,18 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
-import com.bosssoft.platform.es.jdbc.builder.QueryBuilder;
-import com.bosssoft.platform.es.jdbc.builder.QueryBuilderImpl;
-import com.bosssoft.platform.es.jdbc.builder.SearchConverter;
-import com.bosssoft.platform.es.jdbc.builder.SearchConverterImpl;
-import com.bosssoft.platform.es.jdbc.builder.UpdateBuilder;
-import com.bosssoft.platform.es.jdbc.builder.UpdateBuilderImpl;
+import com.bosssoft.platform.es.jdbc.constructer.QueryConstructer;
+import com.bosssoft.platform.es.jdbc.constructer.QueryConstructerImpl;
+import com.bosssoft.platform.es.jdbc.constructer.SearchConverter;
+import com.bosssoft.platform.es.jdbc.constructer.SearchConverterImpl;
+import com.bosssoft.platform.es.jdbc.constructer.UpdateConstructer;
+import com.bosssoft.platform.es.jdbc.constructer.UpdateConstructerImpl;
 import com.bosssoft.platform.es.jdbc.director.QueryDirector;
 import com.bosssoft.platform.es.jdbc.director.SelectObjDirector;
 import com.bosssoft.platform.es.jdbc.director.UpdateDirector;
+import com.bosssoft.platform.es.jdbc.driver.ESClient;
 import com.bosssoft.platform.es.jdbc.driver.ESConnection;
+import com.bosssoft.platform.es.jdbc.model.QueryBody;
 import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 import com.facebook.presto.sql.parser.SqlParser;
 
@@ -51,14 +53,16 @@ public class ESStatement implements Statement{
 	private UpdateDirector updateDirector;
 	
 	
-	public ESStatement(){
+	public ESStatement(ESConnection connection){
+		this.connection=connection;
+		
 		SearchConverter searchConverter=new SearchConverterImpl();
 		selectObjDirector=new SelectObjDirector(searchConverter);
 		
-		QueryBuilder queryBuilder=new QueryBuilderImpl();
+		QueryConstructer queryBuilder=new QueryConstructerImpl();
 		queryDirector=new QueryDirector(queryBuilder);
 		
-		UpdateBuilder updateBuilder=new UpdateBuilderImpl();
+		UpdateConstructer updateBuilder=new UpdateConstructerImpl();
 		updateDirector=new UpdateDirector(updateBuilder);
 	}
 	
@@ -72,7 +76,16 @@ public class ESStatement implements Statement{
 		//暂时去除分页的语句
 		String formatSql=hashLimit(sql);
 		com.facebook.presto.sql.tree.Statement statement = sqlparser.createStatement(formatSql);
+		
+		//封装查询信息
 		SelectSqlObj sqlObj=selectObjDirector.convent(statement,sql);
+		
+		//构建es的查询体
+		QueryBody queryBody=queryDirector.constructQuery(sqlObj);
+		
+		//调用ESClinet对es查询
+		ESClient esClient=connection.getEsClient();
+		esClient.search(queryBody.getQueryBuilder(), queryBody.getAggregationBuilder(), connection.getIndex(), sqlObj.getFrom());
 		return null;
 	}
 

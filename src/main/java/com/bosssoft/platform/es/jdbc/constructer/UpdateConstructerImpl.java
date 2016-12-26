@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 
-package com.bosssoft.platform.es.jdbc.builder;
+package com.bosssoft.platform.es.jdbc.constructer;
 
 /**
  * TODO 此处填写 class 信息
@@ -20,7 +20,7 @@ package com.bosssoft.platform.es.jdbc.builder;
  * @author huangxuewen (mailto:huangxuewen@bosssoft.com.cn)
  */
 
-public class UpdateBuilderImpl implements UpdateBuilder{
+public class UpdateConstructerImpl implements UpdateConstructer{
 
 }
 

@@ -12,7 +12,11 @@
  *******************************************************************************/
 
 
-package com.bosssoft.platform.es.jdbc.builder;
+package com.bosssoft.platform.es.jdbc.constructer;
+
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+
+import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 
 /**
  * TODO 此处填写 class 信息
@@ -20,8 +24,9 @@ package com.bosssoft.platform.es.jdbc.builder;
  * @author huangxuewen (mailto:huangxuewen@bosssoft.com.cn)
  */
 
-public interface QueryBuilder {
-
+public interface QueryConstructer {
+   
+	public AggregationBuilder distinctConstruct(SelectSqlObj obj);
 }
 
 /*

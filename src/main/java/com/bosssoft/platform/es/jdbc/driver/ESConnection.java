@@ -62,7 +62,7 @@ public class ESConnection implements Connection{
 	@Override
 	public Statement createStatement() throws SQLException {
 		
-		return new ESStatement();
+		return new ESStatement(this);
 	}
 	
 	
