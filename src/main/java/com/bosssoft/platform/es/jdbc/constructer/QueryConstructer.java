@@ -14,8 +14,13 @@
 
 package com.bosssoft.platform.es.jdbc.constructer;
 
+import java.sql.SQLException;
+import java.util.List;
+
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 
+import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
 import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 
 /**
@@ -26,7 +31,12 @@ import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 
 public interface QueryConstructer {
    
-	public AggregationBuilder distinctConstruct(SelectSqlObj obj);
+	public AggregationBuilder distinctConstruct(List<ColumnMate> selectItems);
+	
+	/**
+	 * 聚合函数的处理
+	 */
+	public AggregationBuilder aggregateConstruct(List<ColumnMate> selectItems,QueryBuilder queryBuilder)throws SQLException;
 }
 
 /*

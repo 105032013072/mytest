@@ -98,8 +98,9 @@ public class SearchConverterImpl implements SearchConverter{
 	            if(exp instanceof FunctionCall){
 	            	FunctionCall fc=(FunctionCall) exp;
 	                columnMate.setAggType(AggType.valueOf(fc.getName().toString().toUpperCase()));
-	                columnMate.setName(fc.getArguments().get(0).toString());;
+	                columnMate.setName(parserField(fc.getArguments().get(0)));
 	            }else {
+	            	columnMate.setAggType(AggType.NONE);
 	            	QualifiedNameReference qnf=(QualifiedNameReference) exp;
 	            	columnMate.setName(qnf.getName().toString());
 	            	

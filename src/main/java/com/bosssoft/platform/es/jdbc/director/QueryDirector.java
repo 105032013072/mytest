@@ -14,6 +14,10 @@
 
 package com.bosssoft.platform.es.jdbc.director;
 
+import java.sql.SQLException;
+
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 
 import com.bosssoft.platform.es.jdbc.constructer.QueryConstructer;
@@ -35,10 +39,19 @@ public class QueryDirector {
 		
 	}
 	
-	public  QueryBody constructQuery(SelectSqlObj obj){
+	public  QueryBody constructQuery(SelectSqlObj obj) throws SQLException{
 		QueryBody queryBody=new QueryBody();
-		AggregationBuilder aggregationBuilder=constructer.distinctConstruct(obj);
-		queryBody.setAggregationBuilder(aggregationBuilder);
+		
+		//distinct
+		if(obj.getDistinct()==true){
+			AggregationBuilder aggregationBuilder=constructer.distinctConstruct(obj.getSelectItems());
+			queryBody.setAggregationBuilder(aggregationBuilder);
+		}
+		
+		//聚合函数(一定要有一个QueryBuilder)
+		QueryBuilder queryBuilder=QueryBuilders.matchAllQuery();
+		AggregationBuilder aggregationBuilder=constructer.aggregateConstruct(obj.getSelectItems(),queryBuilder);
+	    queryBody.setAggregationBuilder(aggregationBuilder);
 		return queryBody;
 		
 	}

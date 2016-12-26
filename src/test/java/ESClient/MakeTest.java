@@ -22,6 +22,8 @@ import java.sql.Statement;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.bosssoft.platform.es.jdbc.enumeration.AggType;
+
 /**
  * TODO 开发测试类
  *
@@ -55,7 +57,7 @@ public class MakeTest {
 		      	//ResultSet rs = st.executeQuery("SELECT * FROM uab_agen_item where tfname ='测试3' limit 2,3");
 			 
 			 Statement st = con.createStatement(); 	
-			 ResultSet rs = st.executeQuery("SELECT * FROM user where user_salary=2200 ");
+			 ResultSet rs = st.executeQuery("SELECT user_salary FROM user where user_salary>=2200 ");
 		      while(rs.next()){
 		       	System.out.println(rs.getInt("user_salary"));
 		       	System.out.println(rs.getString("user_no"));
@@ -84,6 +86,30 @@ public class MakeTest {
 				e.printStackTrace();
 			}
 	 }
+	 
+	 
+	 @Test
+	 //聚合函数
+	 public void test2(){
+		 try {
+			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
+		      	Statement st = con.createStatement();
+		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
+		      	ResultSet rs = st.executeQuery("SELECT min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
+		      	while(rs.next()){
+		       		System.out.println("total:"+rs.getFloat("total"));
+		       		System.out.println("min:"+rs.getDouble("min"));
+		       		System.out.println("max:"+rs.getDouble("max"));
+		       		System.out.println("sum:"+rs.getDouble("sum"));
+		       		System.out.println("avg:"+rs.getDouble("avg"));
+		       	 }
+		       	 rs.close();
+		       	 con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	 }
+
 }
 
 /*
