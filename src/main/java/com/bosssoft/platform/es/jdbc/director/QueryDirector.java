@@ -41,17 +41,33 @@ public class QueryDirector {
 	
 	public  QueryBody constructQuery(SelectSqlObj obj) throws SQLException{
 		QueryBody queryBody=new QueryBody();
-		
+		QueryBuilder qb=null;
+		AggregationBuilder aggregationBuilder=null;
 		//distinct
 		if(obj.getDistinct()==true){
-			AggregationBuilder aggregationBuilder=constructer.distinctConstruct(obj.getSelectItems());
-			queryBody.setAggregationBuilder(aggregationBuilder);
+			aggregationBuilder=constructer.distinctConstruct(obj.getSelectItems());
 		}
 		
-		//聚合函数(一定要有一个QueryBuilder)
-		QueryBuilder queryBuilder=QueryBuilders.matchAllQuery();
-		AggregationBuilder aggregationBuilder=constructer.aggregateConstruct(obj.getSelectItems(),queryBuilder);
-	    queryBody.setAggregationBuilder(aggregationBuilder);
+		//where
+		if(obj.getWhere()==null){
+			qb=QueryBuilders.matchAllQuery();
+		}else{
+			qb=constructer.whereConstruct(obj.getWhere());
+		}
+		
+	    //聚合函数
+		if(obj.hasAggregation()){
+			if(obj.getGroupby()==null){//单纯只有聚合函数
+				aggregationBuilder=constructer.aggregateConstruct(obj.getSelectItems(),qb);
+			}else{//group by（在group by基础上处理聚合函数）
+				aggregationBuilder=constructer.groupConstruct(obj.getGroupby(), obj.getSelectItems());
+			}
+			
+		}
+		queryBody.setAggregationBuilder(aggregationBuilder);
+		queryBody.setOrderby(obj.getOrderby());
+		queryBody.setPageMate(obj.getLimit());
+		queryBody.setQueryBuilder(qb);
 		return queryBody;
 		
 	}

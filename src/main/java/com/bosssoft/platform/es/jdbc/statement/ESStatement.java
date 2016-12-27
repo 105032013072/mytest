@@ -30,6 +30,7 @@ import com.bosssoft.platform.es.jdbc.director.SelectObjDirector;
 import com.bosssoft.platform.es.jdbc.director.UpdateDirector;
 import com.bosssoft.platform.es.jdbc.driver.ESClient;
 import com.bosssoft.platform.es.jdbc.driver.ESConnection;
+import com.bosssoft.platform.es.jdbc.mate.InExpression;
 import com.bosssoft.platform.es.jdbc.model.QueryBody;
 import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 import com.facebook.presto.sql.parser.SqlParser;
@@ -85,7 +86,7 @@ public class ESStatement implements Statement{
 		
 		//调用ESClinet对es查询
 		ESClient esClient=connection.getEsClient();
-		esClient.search(queryBody.getQueryBuilder(), queryBody.getAggregationBuilder(), connection.getIndex(), sqlObj.getFrom());
+		esClient.search(queryBody.getQueryBuilder(), queryBody.getAggregationBuilder(),queryBody.getOrderby(),queryBody.getPageMate(), connection.getIndex(), sqlObj.getFrom());
 		return null;
 	}
 

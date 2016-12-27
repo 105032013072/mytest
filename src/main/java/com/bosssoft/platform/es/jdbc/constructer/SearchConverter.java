@@ -93,7 +93,7 @@ public interface SearchConverter {
 	 * @param qb
 	 * @return
 	 */
-	public  List<String> conventGroupby(QueryBody qb);
+	public  List<ColumnMate> conventGroupby(QueryBody qb);
 
 	/**
 	 * @param qb

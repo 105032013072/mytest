@@ -16,6 +16,7 @@ package com.bosssoft.platform.es.jdbc.model;
 
 import java.util.List;
 
+import com.bosssoft.platform.es.jdbc.enumeration.AggType;
 import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
 import com.bosssoft.platform.es.jdbc.mate.OrderbyMate;
 import com.bosssoft.platform.es.jdbc.mate.PageMate;
@@ -36,7 +37,7 @@ public class SelectSqlObj {
 	
 	private ConditionExp where;
 	
-	private List<String> groupby;
+	private List<ColumnMate> groupby;
 	
 	private ConditionExp having;
 	
@@ -68,11 +69,13 @@ public class SelectSqlObj {
 		this.from = from;
 	}
 
-	public List<String> getGroupby() {
+	
+
+	public List<ColumnMate> getGroupby() {
 		return groupby;
 	}
 
-	public void setGroupby(List<String> groupby) {
+	public void setGroupby(List<ColumnMate> groupby) {
 		this.groupby = groupby;
 	}
 
@@ -108,6 +111,12 @@ public class SelectSqlObj {
 		this.having = having;
 	}
 	
+	public  Boolean hasAggregation(){
+		for (ColumnMate columnMate : selectItems) {
+			if(!AggType.NONE.equals(columnMate.getAggType())) return true;
+		}
+		return false;
+	}
 	
 }
 

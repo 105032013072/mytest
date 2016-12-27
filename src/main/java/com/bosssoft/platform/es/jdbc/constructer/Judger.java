@@ -17,6 +17,11 @@ package com.bosssoft.platform.es.jdbc.constructer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.facebook.presto.sql.tree.DoubleLiteral;
+import com.facebook.presto.sql.tree.Expression;
+import com.facebook.presto.sql.tree.LongLiteral;
+import com.facebook.presto.sql.tree.StringLiteral;
+
 /**
  * 判断输入的字符串是否合法
  *
@@ -32,5 +37,25 @@ public class Judger {
 	    // 字符串是否与正则表达式相匹配
 	    boolean rs = matcher.matches();
 	    return rs;
+	}
+	
+	public static Object judgeNumType(Expression e){
+		Object result=null;
+		if(e instanceof StringLiteral){
+			
+			 StringLiteral literal=(StringLiteral) e;
+			 result=literal.getValue();
+
+		 }else if(e instanceof DoubleLiteral){
+			
+			DoubleLiteral literal=(DoubleLiteral) e;
+			result=literal.getValue();
+			
+		 }else {
+			
+			 LongLiteral literal=(LongLiteral) e;
+			result=literal.getValue();
+		 }
+		return result;
 	}
 }

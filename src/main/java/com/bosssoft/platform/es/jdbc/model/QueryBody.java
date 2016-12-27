@@ -14,8 +14,13 @@
 
 package com.bosssoft.platform.es.jdbc.model;
 
+import java.util.List;
+
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
+
+import com.bosssoft.platform.es.jdbc.mate.OrderbyMate;
+import com.bosssoft.platform.es.jdbc.mate.PageMate;
 
 
 /**
@@ -29,6 +34,10 @@ public class QueryBody {
 	private QueryBuilder queryBuilder;
 	
 	private AggregationBuilder aggregationBuilder;
+	
+	private PageMate pageMate;//分页信息
+	
+	private List<OrderbyMate> orderby;
 
 	public QueryBuilder getQueryBuilder() {
 		return queryBuilder;
@@ -44,6 +53,22 @@ public class QueryBody {
 
 	public void setAggregationBuilder(AggregationBuilder aggregationBuilder) {
 		this.aggregationBuilder = aggregationBuilder;
+	}
+
+	public PageMate getPageMate() {
+		return pageMate;
+	}
+
+	public void setPageMate(PageMate pageMate) {
+		this.pageMate = pageMate;
+	}
+
+	public List<OrderbyMate> getOrderby() {
+		return orderby;
+	}
+
+	public void setOrderby(List<OrderbyMate> orderby) {
+		this.orderby = orderby;
 	}
 
 	

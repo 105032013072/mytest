@@ -22,7 +22,7 @@ package com.bosssoft.platform.es.jdbc.mate;
 
 public class PageMate {
 
-private int from;
+    private int from;
 	
 	private int pageSize;
 	

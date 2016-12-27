@@ -15,6 +15,7 @@
 package com.bosssoft.platform.es.jdbc.driver;
 
 import java.net.InetAddress;
+import java.util.List;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -23,8 +24,12 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.bosssoft.platform.es.jdbc.mate.OrderbyMate;
+import com.bosssoft.platform.es.jdbc.mate.PageMate;
 
 /**
  * 封装对es的操作
@@ -57,13 +62,27 @@ public class ESClient {
 	}
 	
 	//查询
-	public void search(QueryBuilder queryBuilder,  AggregationBuilder aggregation,String indexName, String... indexType){
+	public void search(QueryBuilder queryBuilder,  AggregationBuilder aggregation,List<OrderbyMate> orderby,PageMate page,String indexName, String... indexType){
 		SearchRequestBuilder srb=client.prepareSearch(indexName)
-  				.setTypes(indexType)
-  				.setQuery(queryBuilder)
-  				.addAggregation(aggregation);
-  		
-  		System.out.println(srb.toString());
+  				.setTypes(indexType);
+		
+		if(aggregation!=null){
+			srb=srb.addAggregation(aggregation);
+		}
+		if(queryBuilder!=null){
+			srb.setQuery(queryBuilder);
+		}
+		
+		System.out.println(srb.toString());
+		
+		//添加order by
+		for (OrderbyMate orderbyMate : orderby) {
+			srb.addSort(orderbyMate.getField(), SortOrder.valueOf(orderbyMate.getOrderType().toString()));
+		}
+		
+		//添加分页信息
+		srb.setFrom(page.getFrom()).setSize(page.getPageSize());
+
   		SearchResponse searchResponse =srb.execute().actionGet();
   		
 	}

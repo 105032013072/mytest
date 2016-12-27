@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
@@ -31,10 +32,19 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.avg.AvgBuilder;
 
 import com.bosssoft.platform.es.jdbc.enumeration.AggType;
+import com.bosssoft.platform.es.jdbc.mate.BetweenExpression;
 import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
+import com.bosssoft.platform.es.jdbc.mate.ConNotExpression;
+import com.bosssoft.platform.es.jdbc.mate.InExpression;
 import com.bosssoft.platform.es.jdbc.mate.Inequality;
+import com.bosssoft.platform.es.jdbc.mate.NullExpression;
 import com.bosssoft.platform.es.jdbc.model.ConditionExp;
 import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
+import com.facebook.presto.sql.tree.DoubleLiteral;
+import com.facebook.presto.sql.tree.Expression;
+import com.facebook.presto.sql.tree.LongLiteral;
+import com.facebook.presto.sql.tree.NotExpression;
+import com.facebook.presto.sql.tree.StringLiteral;
 
 
 /**
@@ -44,6 +54,8 @@ import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
  */
 
 public class QueryConstructerImpl implements QueryConstructer{
+	
+	private static Judger judger=new Judger();
 
 	/**
 	 * distinct 处理
@@ -71,7 +83,7 @@ public class QueryConstructerImpl implements QueryConstructer{
 		FilterAggregationBuilder result = AggregationBuilders.filter("aggregationfilter").filter(queryBuilder);
 		
 		for (ColumnMate columnMate : selectItems) {
-			if(!AggType.NONE.equals(columnMate.getAggType())){
+			if(!AggType.NONE.equals(columnMate.getAggType())&&!"*".equals(columnMate.getName())){//* 的聚合函数在结果集中处理
 				result.subAggregation(getAggregateTerm(columnMate));
 			}
 		}
@@ -84,9 +96,7 @@ public class QueryConstructerImpl implements QueryConstructer{
 		AggType aggType=columnMate.getAggType();
 		
 		//获取聚合名
-		String aggName=null;
-		if(columnMate.getAlias()==null) aggName=columnMate.getName();
-		else aggName=columnMate.getAlias();
+		String aggName=columnMate.getAlias();
 		
 		if(AggType.AVG.equals(aggType))
 			builder=AggregationBuilders.avg(aggName).field(columnMate.getName());
@@ -108,29 +118,44 @@ public class QueryConstructerImpl implements QueryConstructer{
 	 * 
 	 */
 	public QueryBuilder whereConstruct(ConditionExp conditionExp) throws SQLException{
-	    Object obj=conditionExp.getExpression();
-		return getQueryBuilder(obj);
+		return getQueryBuilder(conditionExp);
 	}
 	
-	private QueryBuilder getQueryBuilder(Object obj) throws SQLException{
+	private QueryBuilder getQueryBuilder(ConditionExp conexp) throws SQLException{
+		Object obj=conexp.getExpression();
 		QueryBuilder qb=null;
 		if(obj instanceof ConditionExp){
-			ConditionExp exp=(ConditionExp) obj;
-			
-			Object left= exp.getExpression();
-			Object right= exp.getNext();
-			if("and".equals(exp.getRelation())){
-				qb=QueryBuilders.boolQuery().must(getQueryBuilder(left))
-						                    .must(getQueryBuilder(right));
-			}else{
-				qb=QueryBuilders.boolQuery().should(getQueryBuilder(left))
-	                    .should(getQueryBuilder(right));
-			}	
+			qb=resolveConditionExp((ConditionExp) obj);	
 		}else if(obj instanceof Inequality){//不等式
 			qb=resolveInequality((Inequality) obj);
-		}else if
-		return null;
+		}else if(obj instanceof NullExpression){//is null   is not null
+			qb=resolveNullExpression((NullExpression) obj);
+		}else if(obj instanceof InExpression){//where  in
+			qb=resolveInExpression((InExpression) obj);
+		}else if(obj instanceof ConNotExpression){
+			ConNotExpression exp=(ConNotExpression) obj;
+			qb=QueryBuilders.boolQuery().mustNot(whereConstruct(exp.getConditionExp()));
+		}else if(obj instanceof BetweenExpression){
+			qb=resolveBetween((BetweenExpression) obj);
+		}
+		return qb;
 	}
+	
+	private QueryBuilder resolveConditionExp(ConditionExp exp) throws SQLException{
+		QueryBuilder qb=null;
+		ConditionExp left= (ConditionExp) exp.getExpression();
+		ConditionExp right= (ConditionExp) exp.getNext();
+		if("AND".equals(exp.getRelation())){
+			qb=QueryBuilders.boolQuery().must(getQueryBuilder(left))
+					                    .must(getQueryBuilder(right));
+		}else{
+			qb=QueryBuilders.boolQuery().should(getQueryBuilder(left))
+                    .should(getQueryBuilder(right));
+		}
+		return qb;
+	}
+	
+	
 	
 	private QueryBuilder resolveInequality(Inequality inequality) throws SQLException{
 		String op=inequality.getOperation();
@@ -165,6 +190,73 @@ public class QueryConstructerImpl implements QueryConstructer{
 		}else throw new SQLException("illegal opreration");
 		return qb;
 	}
+	
+	private QueryBuilder resolveNullExpression(NullExpression nullExpression) throws SQLException{
+		String op=nullExpression.getOpration();
+		QueryBuilder qb=null;
+		if("is null".equals(op)){
+			qb=QueryBuilders.existsQuery(nullExpression.getFiled());
+		}else if("is not null".equals(op)){
+			qb=qb=QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery(nullExpression.getFiled()));
+		}else throw new SQLException("illegal opreration");
+		return qb;
+	}
+	
+	 private QueryBuilder resolveInExpression(InExpression inExpression){
+		 String field=inExpression.getField();
+		 List<Expression> range=inExpression.getRangeList();
+		 List<Object> target=new ArrayList<>();
+		 Expression t= range.get(0);
+		 
+		 //转化范围的具体类型
+		for (Expression expression : range) {
+			target.add(judger.judgeNumType(expression));
+		}
+		 //正式处理
+		 BoolQueryBuilder bqb=QueryBuilders.boolQuery();
+		 for (Object object : target) {
+			bqb.should(QueryBuilders.matchQuery(field, object));
+		}
+		 return bqb;
+		 
+	 }
+	
+	 private QueryBuilder resolveBetween(BetweenExpression betweenExpression){
+		 
+		 String field=betweenExpression.getFiled();
+		 Object between=judger.judgeNumType(betweenExpression.getBewteen());
+		 Object and=judger.judgeNumType(betweenExpression.getAnd());
+		 return QueryBuilders.rangeQuery(field).from(between).to(and);
+	 }
+	 
+	 /**
+	  * group by
+	 * @throws SQLException 
+	  */
+	 
+	 public AggregationBuilder groupConstruct(List<ColumnMate> groupList,List<ColumnMate> selectItems) throws SQLException{
+		 TermsBuilder result=null;
+		 for (int i = 0; i < groupList.size(); i++) {
+			if(i==0) result=AggregationBuilders.terms(groupList.get(i).getName()).field(groupList.get(i).getName());
+			else {
+				TermsBuilder helper=AggregationBuilders.terms(groupList.get(i).getName()).field(groupList.get(i).getName());
+				if(i==groupList.size()-1){//最后一个列的group by 添加聚合函数
+					addAggregation(helper,selectItems);
+				}
+				result=result.subAggregation(helper);
+			}
+		}
+		 return result;
+	 }
+	 
+	 private void addAggregation(TermsBuilder termsBuilder,List<ColumnMate> selectItems) throws SQLException{
+		 for (ColumnMate columnMate : selectItems) {
+			 if(!AggType.NONE.equals(columnMate.getAggType())){
+				 termsBuilder.subAggregation(getAggregateTerm(columnMate));
+			 }
+		}
+	 }
+	 
 }
 
 /*

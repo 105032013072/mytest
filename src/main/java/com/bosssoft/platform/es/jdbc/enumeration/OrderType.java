@@ -24,7 +24,7 @@ public enum OrderType {
 	ASCENDING {
         @Override
         public String toString() {
-            return "asc";
+            return "ASC";
         }
     },
     /**
@@ -33,7 +33,7 @@ public enum OrderType {
 	DESCENDING{
         @Override
         public String toString() {
-            return "desc";
+            return "DESC";
         }
     };
 }

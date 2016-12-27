@@ -84,26 +84,30 @@ public class SearchConverterImpl implements SearchConverter{
 			
 			if(selectItem instanceof AllColumns){//select *
 				columnMate.setName(selectItem.toString());
-				
+				columnMate.setAggType(AggType.NONE);
 			}else {//select coulumn
 				SingleColumn sc=(SingleColumn) selectItem;
-	            
-	            //设置别名
-	            if(sc.getAlias().isPresent())
-	                 columnMate.setAlias(sc.getAlias().get().toString());
-	            
 	            
 	            //根据是否是聚合函数来设置字段名和聚合函数类型
 	            Expression exp =sc.getExpression();
 	            if(exp instanceof FunctionCall){
 	            	FunctionCall fc=(FunctionCall) exp;
 	                columnMate.setAggType(AggType.valueOf(fc.getName().toString().toUpperCase()));
-	                columnMate.setName(parserField(fc.getArguments().get(0)));
+	               List<Expression> aggList=fc.getArguments();
+	               if(aggList.size()==0) columnMate.setName("*");
+	               else columnMate.setName(parserField(aggList.get(0)));
+	           
 	            }else {
 	            	columnMate.setAggType(AggType.NONE);
 	            	QualifiedNameReference qnf=(QualifiedNameReference) exp;
 	            	columnMate.setName(qnf.getName().toString());
-	            	
+	            }
+	            
+	            //设置别名
+	            if(sc.getAlias().isPresent())
+	                 columnMate.setAlias(sc.getAlias().get().toString());
+	            else{//没有设置别名：默认字段名为别名
+	            	columnMate.setAlias(columnMate.getName());
 	            }
 			}
 			
@@ -125,14 +129,21 @@ public class SearchConverterImpl implements SearchConverter{
 		List<OrderbyMate> result=new ArrayList<>();
 		
 		List<SortItem> list=((QuerySpecification)qb).getOrderBy();
-		if(list.size()==0) return null;
-		
-		for (SortItem sortItem : list) {
+		if(list.size()==0) {//没有指定排序的列，则根据_id 升序
 			OrderbyMate mate=new OrderbyMate();
-			mate.setField(parserField(sortItem.getSortKey()));
-			mate.setOrderType(OrderType.valueOf(sortItem.getOrdering().toString()));
+			mate.setField("_id");
+			mate.setOrderType(OrderType.ASCENDING);
 			result.add(mate);
+		}else {
+			for (SortItem sortItem : list) {
+				OrderbyMate mate=new OrderbyMate();
+				mate.setField(parserField(sortItem.getSortKey()));
+				mate.setOrderType(OrderType.valueOf(sortItem.getOrdering().toString()));
+				result.add(mate);
+			}
 		}
+		
+		
 		return result;
 	}
 
@@ -145,13 +156,19 @@ public class SearchConverterImpl implements SearchConverter{
 	 * @return
 	 */
 	public PageMate conventLimit(String sql) {
-		if(!sql.contains("limit")) return null;
-		String limitStr=sql.substring(sql.indexOf("limit"),sql.length()).replaceAll(" ", "");
-		String str=limitStr.substring(5, limitStr.length());
-		String []reslut=str.split(",");
 		PageMate mate=new PageMate();
-		mate.setFrom(Integer.valueOf(reslut[0]));
-		mate.setPageSize(Integer.valueOf(reslut[1]));
+		if(!sql.contains("limit")){//没有指定分页，默认返回第一页，每页10条
+			mate.setFrom(0);
+			mate.setPageSize(10);
+		}else{
+			String limitStr=sql.substring(sql.indexOf("limit"),sql.length()).replaceAll(" ", "");
+			String str=limitStr.substring(5, limitStr.length());
+			String []reslut=str.split(",");
+			
+			mate.setFrom(Integer.valueOf(reslut[0]));
+			mate.setPageSize(Integer.valueOf(reslut[1]));
+		}
+		
 		return mate;
 	}
 
@@ -238,7 +255,10 @@ public class SearchConverterImpl implements SearchConverter{
 			exp.setNext(rightCon);
 			exp.setRelation(logicalexp.getType().toString());
 			
-			return exp;
+			ConditionExp conditionExp=new ConditionExp();
+			conditionExp.setExpression(exp);
+			
+			return conditionExp;
 			
 		}else {
 			throw new SQLException("expression is illegal");
@@ -251,14 +271,16 @@ public class SearchConverterImpl implements SearchConverter{
 	 * @param qb
 	 * @return
 	 */
-	public List<String> conventGroupby(QueryBody qb) {
+	public List<ColumnMate> conventGroupby(QueryBody qb) {
 		List<GroupingElement> list=((QuerySpecification)qb).getGroupBy();
 		if(list.size()==0) return null;
-		List<String> result=new ArrayList<>();
+		List<ColumnMate> result=new ArrayList<>();
 		
 		for (GroupingElement element : list) {
 			SimpleGroupBy sgb=(SimpleGroupBy) element;
-			result.add(parserField(sgb.getColumnExpressions().get(0)));
+			ColumnMate mate=new ColumnMate();
+			mate.setName( parserField(sgb.getColumnExpressions().get(0)));
+			result.add(mate);
 		}
 		
 		

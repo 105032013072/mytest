@@ -14,6 +14,8 @@
 
 package com.bosssoft.platform.es.jdbc.mate;
 
+import com.facebook.presto.sql.tree.Expression;
+
 /**
  * bewteen.. and ..
  *
@@ -23,9 +25,9 @@ package com.bosssoft.platform.es.jdbc.mate;
 public class BetweenExpression {
    private String filed;
    
-   private Object bewteen;
+   private Expression bewteen;
    
-   private Object and;
+   private Expression and;
 
 public String getFiled() {
 	return filed;
@@ -35,19 +37,19 @@ public void setFiled(String filed) {
 	this.filed = filed;
 }
 
-public Object getBewteen() {
+public Expression getBewteen() {
 	return bewteen;
 }
 
-public void setBewteen(Object bewteen) {
+public void setBewteen(Expression bewteen) {
 	this.bewteen = bewteen;
 }
 
-public Object getAnd() {
+public Expression getAnd() {
 	return and;
 }
 
-public void setAnd(Object and) {
+public void setAnd(Expression and) {
 	this.and = and;
 }
 

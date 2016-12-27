@@ -28,6 +28,9 @@ public class ConditionExp {
 	
 	private String relation;
 
+	
+
+
 	public Object getExpression() {
 		return expression;
 	}
