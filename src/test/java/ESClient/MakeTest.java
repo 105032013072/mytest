@@ -58,7 +58,9 @@ public class MakeTest {
 		      	//ResultSet rs = st.executeQuery("SELECT * FROM uab_agen_item where tfname ='测试3' limit 2,3");
 			 
 			 Statement st = con.createStatement(); 	
-			 ResultSet rs = st.executeQuery("SELECT avg(user_salary) FROM user where user_salary>=2200 ");
+			 
+			 ResultSet rs = st.executeQuery("SELECT * FROM user where user_salary>=2200 ");
+			 //ResultSet rs = st.executeQuery("SELECT  distinct user_salary from user where user_salary>3000");
 		      while(rs.next()){
 		       	System.out.println(rs.getInt("user_salary"));
 		       	System.out.println(rs.getString("user_no"));
@@ -96,7 +98,7 @@ public class MakeTest {
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
-		      	ResultSet rs = st.executeQuery("SELECT min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
+		      	ResultSet rs = st.executeQuery("SELECT min(user_salary) as min,MAX(user_salary) from user");
 		      	while(rs.next()){
 		       		System.out.println("total:"+rs.getFloat("total"));
 		       		System.out.println("min:"+rs.getDouble("min"));

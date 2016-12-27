@@ -62,7 +62,7 @@ public class ESClient {
 	}
 	
 	//查询
-	public void search(QueryBuilder queryBuilder,  AggregationBuilder aggregation,List<OrderbyMate> orderby,PageMate page,String indexName, String... indexType){
+	public SearchResponse search(QueryBuilder queryBuilder,  AggregationBuilder aggregation,List<OrderbyMate> orderby,PageMate page,String indexName, String... indexType){
 		SearchRequestBuilder srb=client.prepareSearch(indexName)
   				.setTypes(indexType);
 		
@@ -73,7 +73,7 @@ public class ESClient {
 			srb.setQuery(queryBuilder);
 		}
 		
-		System.out.println(srb.toString());
+		//System.out.println(srb.toString());
 		
 		//添加order by
 		for (OrderbyMate orderbyMate : orderby) {
@@ -84,6 +84,9 @@ public class ESClient {
 		srb.setFrom(page.getFrom()).setSize(page.getPageSize());
 
   		SearchResponse searchResponse =srb.execute().actionGet();
+  		System.out.println(searchResponse.toString());
+  		
+  		return searchResponse;
   		
 	}
 	

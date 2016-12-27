@@ -19,13 +19,18 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
+import org.elasticsearch.action.search.SearchResponse;
+
 import com.bosssoft.platform.es.jdbc.constructer.QueryConstructer;
 import com.bosssoft.platform.es.jdbc.constructer.QueryConstructerImpl;
+import com.bosssoft.platform.es.jdbc.constructer.ResultSetConstructer;
+import com.bosssoft.platform.es.jdbc.constructer.ResultSetConstructerImpl;
 import com.bosssoft.platform.es.jdbc.constructer.SearchConverter;
 import com.bosssoft.platform.es.jdbc.constructer.SearchConverterImpl;
 import com.bosssoft.platform.es.jdbc.constructer.UpdateConstructer;
 import com.bosssoft.platform.es.jdbc.constructer.UpdateConstructerImpl;
 import com.bosssoft.platform.es.jdbc.director.QueryDirector;
+import com.bosssoft.platform.es.jdbc.director.ResultSetDirector;
 import com.bosssoft.platform.es.jdbc.director.SelectObjDirector;
 import com.bosssoft.platform.es.jdbc.director.UpdateDirector;
 import com.bosssoft.platform.es.jdbc.driver.ESClient;
@@ -51,6 +56,8 @@ public class ESStatement implements Statement{
 	
 	private QueryDirector queryDirector;
 	
+	private ResultSetDirector resultDirector;
+	
 	private UpdateDirector updateDirector;
 	
 	
@@ -62,6 +69,9 @@ public class ESStatement implements Statement{
 		
 		QueryConstructer queryBuilder=new QueryConstructerImpl();
 		queryDirector=new QueryDirector(queryBuilder);
+		
+		ResultSetConstructer resultBuilder=new ResultSetConstructerImpl();
+		resultDirector=new ResultSetDirector(resultBuilder);
 		
 		UpdateConstructer updateBuilder=new UpdateConstructerImpl();
 		updateDirector=new UpdateDirector(updateBuilder);
@@ -86,7 +96,10 @@ public class ESStatement implements Statement{
 		
 		//调用ESClinet对es查询
 		ESClient esClient=connection.getEsClient();
-		esClient.search(queryBody.getQueryBuilder(), queryBody.getAggregationBuilder(),queryBody.getOrderby(),queryBody.getPageMate(), connection.getIndex(), sqlObj.getFrom());
+		SearchResponse response=esClient.search(queryBody.getQueryBuilder(), queryBody.getAggregationBuilder(),queryBody.getOrderby(),queryBody.getPageMate(), connection.getIndex(), sqlObj.getFrom());
+		
+		//构建resultSet
+		resultDirector.construct(response);
 		return null;
 	}
 
