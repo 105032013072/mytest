@@ -14,8 +14,13 @@
 
 package com.bosssoft.platform.es.jdbc.constructer;
 
-import org.elasticsearch.search.SearchHits;
+import java.util.List;
 
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.Aggregations;
+
+import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
 import com.bosssoft.platform.es.jdbc.model.ESResultSet;
 
 /**
@@ -27,6 +32,10 @@ import com.bosssoft.platform.es.jdbc.model.ESResultSet;
 public interface ResultSetConstructer {
 	
 	public ESResultSet ConstructAllColumn(SearchHits hits);
+	
+	public ESResultSet ConstructSelectColumn(SearchHits hits,List<ColumnMate> selectItems);
+	
+	 public void ConstructDistinct(Aggregations aggregations);
 
 }
 

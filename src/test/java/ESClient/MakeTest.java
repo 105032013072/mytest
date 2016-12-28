@@ -59,7 +59,7 @@ public class MakeTest {
 			 
 			 Statement st = con.createStatement(); 	
 			 
-			 ResultSet rs = st.executeQuery("SELECT * FROM user where user_salary>=2200 ");
+			 ResultSet rs = st.executeQuery("SELECT user_salary, user_no FROM user where user_salary>=2200 ");
 			 //ResultSet rs = st.executeQuery("SELECT  distinct user_salary from user where user_salary>3000");
 		      while(rs.next()){
 		       	System.out.println(rs.getInt("user_salary"));

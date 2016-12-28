@@ -14,6 +14,7 @@
 
 package com.bosssoft.platform.es.jdbc.mate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class ReDistinctMate {
 	
 	private Object value;
 	
-	private List<ReDistinctMate> buckList;
+	private List<Object> buckList=new ArrayList<>();
 
 	public String getField() {
 		return field;
@@ -46,14 +47,18 @@ public class ReDistinctMate {
 		this.value = value;
 	}
 
-	public List<ReDistinctMate> getBuckList() {
+	
+	public List<Object> getBuckList() {
 		return buckList;
 	}
 
-	public void setBuckList(List<ReDistinctMate> buckList) {
+	public void setBuckList(List<Object> buckList) {
 		this.buckList = buckList;
 	}
-	
+
+	public void add(Object mate){
+		buckList.add(mate);
+	}
 	
 }
 
