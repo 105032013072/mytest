@@ -79,7 +79,7 @@ public class MakeTest {
 		 try {
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
-		      	ResultSet rs = st.executeQuery("SELECT  distinct user_salary,user_no from user where user_salary>2200");
+		      	ResultSet rs = st.executeQuery("SELECT  distinct user_no from user where user_salary>2200");
 		      	while(rs.next()){
 		       		System.out.println("user_salary:"+rs.getFloat("user_salary"));
 		       	 }
@@ -169,7 +169,7 @@ public void test4(){
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	
-		      	ResultSet rs = st.executeQuery("SELECT dept_no,user_no,MAX(user_salary) as total FROM user group by dept_no,user_no HAVING total>1 ");
+		      	ResultSet rs = st.executeQuery("SELECT dept_no,min(user_salary) FROM user group by dept_no");
 		       	 ResultSetMetaData rsmd = rs.getMetaData();
 		       	 int nrCols = rsmd.getColumnCount();
 		       	 while(rs.next()){

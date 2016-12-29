@@ -31,11 +31,15 @@ import com.bosssoft.platform.es.jdbc.model.ESResultSet;
 
 public interface ResultSetConstructer {
 	
-	public ESResultSet ConstructAllColumn(SearchHits hits);
+	public ESResultSet constructAllColumn(SearchHits hits);
 	
-	public ESResultSet ConstructSelectColumn(SearchHits hits,List<ColumnMate> selectItems);
+	public ESResultSet constructSelectColumn(SearchHits hits,List<ColumnMate> selectItems);
 	
-	 public void ConstructDistinct(Aggregations aggregations);
+	 public void constructDistinct(Aggregations aggregations);
+	 
+	 public void constructGroupby (Aggregations aggregations);
+	 
+	 public ESResultSet constructAggregation(Aggregations aggregations);
 
 }
 

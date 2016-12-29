@@ -36,11 +36,13 @@ public class ResultSetDirector {
 	
 	public ESResultSet construct(SearchResponse response,SelectSqlObj obj){
 		ESResultSet esResultSet=null;
-		//esResultSet=constructer.ConstructAllColumn(response.getHits());
+		//esResultSet=constructer.constructAllColumn(response.getHits());
 		
-		//esResultSet=constructer.ConstructSelectColumn(response.getHits(), obj.getSelectItems());
+		//esResultSet=constructer.constructSelectColumn(response.getHits(), obj.getSelectItems());
 		
-		constructer.ConstructDistinct(response.getAggregations());
+		//constructer.constructDistinct(response.getAggregations());
+		//constructer.constructGroupby(response.getAggregations());
+		constructer.constructAggregation(response.getAggregations());
 		return esResultSet;
 	}
 }

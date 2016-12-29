@@ -25,10 +25,16 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.filter.InternalFilter;
+import org.elasticsearch.search.aggregations.bucket.filters.InternalFilters;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.metrics.InternalNumericMetricsAggregation;
+import org.elasticsearch.search.aggregations.metrics.max.InternalMax;
 
+import com.bosssoft.platform.es.jdbc.mate.AggValue;
 import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
-import com.bosssoft.platform.es.jdbc.mate.ReDistinctMate;
+import com.bosssoft.platform.es.jdbc.mate.ColumnValue;
+import com.bosssoft.platform.es.jdbc.mate.ResultMate;
 import com.bosssoft.platform.es.jdbc.model.ESResultSet;
 
 /**
@@ -42,7 +48,7 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
 	/**
 	 * select *
 	 */
-    public ESResultSet ConstructAllColumn(SearchHits hits){
+    public ESResultSet constructAllColumn(SearchHits hits){
     	ESResultSet resultSet=new ESResultSet();
     	SearchHit[] searchHists = hits.getHits();
     	if (searchHists.length > 0) {
@@ -60,7 +66,7 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
      * @param hits
      * @return
      */
-    public ESResultSet ConstructSelectColumn(SearchHits hits,List<ColumnMate> selectItems){
+    public ESResultSet constructSelectColumn(SearchHits hits,List<ColumnMate> selectItems){
     	ESResultSet resultSet=new ESResultSet();
     	SearchHit[] searchHists = hits.getHits();
     	if (searchHists.length > 0) {
@@ -91,7 +97,7 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
     /**
      * count（*）
      */
-    public void ConstructCount(SearchHits hits){
+    public void constructCount(SearchHits hits){
     	
     }
     
@@ -99,77 +105,82 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
      * select distinct
      * @param aggregation
      */
-    public void ConstructDistinct(Aggregations aggregations){
+    public void constructDistinct(Aggregations aggregations){
     	System.out.println(aggregations.toString());
     	List<Object> list=new ArrayList<>();
     	  
-    		list=resolveAggsds(aggregations.asList());
+    		list=resolveAggs(aggregations.asList());
     		
     	System.out.println("1231");
     }
     
-    private List<Object> resolveAggsds(List<Aggregation> list){
-    	List<Object> result=new ArrayList<>();
+    /**
+     * 
+     * group by
+     * @param list
+     * @return
+     */
+    public void constructGroupby (Aggregations aggregations){
+    	List<Object> list=new ArrayList<>();
+  	  
+		list=resolveAggs(aggregations.asList());
+    }
+    
+	private List<Object> resolveAggs(List<Aggregation> list) {
+		List<Object> result=new ArrayList<>();
     	for (Aggregation agg : list) {
-    		
-    		Terms aggterms=(Terms) agg;
-    		for(Terms.Bucket bucket : aggterms.getBuckets()){
-    			
-    			List<Aggregation> aggList = bucket.getAggregations().asList();
-    			if(aggList.size()!=0) {
-    				ReDistinctMate mate=new ReDistinctMate();
-        			mate.setField(aggterms.getName());
-    				mate.setValue(bucket.getKey());
-        			mate.setBuckList(resolveAggsds(aggList));
-        			result.add(mate);
-    			}else {
-    				/*ReDistinctMate dm=new ReDistinctMate();
-    				dm.setField(aggterms.getName());
-    				dm.setValue(bucket.getKey());*/
-    				
-    				result.add(bucket.getKey());
-    			}
-    			
+    		if(agg instanceof Terms){
+    			Terms aggterms=(Terms) agg;
+        		for(Terms.Bucket bucket : aggterms.getBuckets()){
+        			
+        			List<Aggregation> aggList = bucket.getAggregations().asList();
+        			if(aggList.size()!=0) {
+        				ResultMate mate=new ResultMate();
+            			mate.setField(aggterms.getName());
+        				mate.setValue(bucket.getKey());
+            			mate.setBuckList(resolveAggs(aggList));
+            			result.add(mate);
+        			}else {
+        				ColumnValue columnValue=new ColumnValue();
+        				columnValue.setField(aggterms.getName());
+        				columnValue.setValue(bucket.getKey());
+        				
+        				result.add(columnValue);
+        			}
+        		}
+    		}else{
+    			InternalNumericMetricsAggregation.SingleValue internalagg=(InternalNumericMetricsAggregation.SingleValue)agg;
+    			ColumnValue columnValue=new ColumnValue();
+    			columnValue.setField(internalagg.getName());
+    			columnValue.setValue(internalagg.value());
+    			result.add(columnValue);
     		}
+    		
+    	}
+    	return result;
+	}
+
+	 /**
+     * 纯聚合函数
+     * @param list
+     * @return
+     */
+    public ESResultSet constructAggregation(Aggregations aggregations){
+    	ESResultSet result=new ESResultSet();
+    	Aggregation agg=aggregations.asList().get(0);
+    	InternalFilter aggfilter=(InternalFilter) agg;
+    	List<Aggregation> aggList=aggfilter.getAggregations().asList();
+    	for (Aggregation aggregation : aggList) {
+    		InternalNumericMetricsAggregation.SingleValue internalagg=(InternalNumericMetricsAggregation.SingleValue)aggregation ;
+		    result.add(internalagg.getName(), internalagg.value());
     	}
     	return result;
     }
-    	
-    
-    
-    
-    //解析聚合
-   
-   /* private ReDistinctMate  resolveAggsdsfsdfs(Aggregation agg){
-    	ReDistinctMate distinctMate=new ReDistinctMate();
-    	if(agg instanceof Terms){ 
-    		
-    		
-    		Terms aggterms=(Terms) agg;
-    		
-    		distinctMate.setField(aggterms.getName());
-    		for(Terms.Bucket bucket : aggterms.getBuckets()){
-    			List<Aggregation> list = bucket.getAggregations().asList();
-    			if(list.size()!=0) {
-    				distinctMate.setValue(bucket.getKey());
-    				for (Aggregation aggregation : list) {
-    					distinctMate.add(resolveAgg(aggregation));
-					}
-    			}else {
-    				ReDistinctMate dm=new ReDistinctMate();
-    				dm.setField(aggterms.getName());
-    				dm.setValue(bucket.getKey());
-    				distinctMate.add(dm);
-    			}
-    		}
-    	}
-    	return distinctMate;
-    }*/
-    
-    
-    private ESResultSet parser(List<ReDistinctMate> list){
+	
+	
+	private ESResultSet parser(List<ResultMate> list){
     	ESResultSet result=new ESResultSet();
-    	for (ReDistinctMate mate : list) {
+    	for (ResultMate mate : list) {
 			
 		}
     	return result;
