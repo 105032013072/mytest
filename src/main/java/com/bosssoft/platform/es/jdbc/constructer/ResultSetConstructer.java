@@ -35,9 +35,9 @@ public interface ResultSetConstructer {
 	
 	public ESResultSet constructSelectColumn(SearchHits hits,List<ColumnMate> selectItems);
 	
-	 public void constructDistinct(Aggregations aggregations);
+	 public ESResultSet constructDistinct(Aggregations aggregations);
 	 
-	 public void constructGroupby (Aggregations aggregations);
+	 public ESResultSet constructGroupby (Aggregations aggregations);
 	 
 	 public ESResultSet constructAggregation(Aggregations aggregations);
 

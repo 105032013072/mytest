@@ -237,7 +237,12 @@ public class QueryConstructerImpl implements QueryConstructer{
 	 public AggregationBuilder groupConstruct(List<ColumnMate> groupList,List<ColumnMate> selectItems) throws SQLException{
 		 TermsBuilder result=null;
 		 for (int i = 0; i < groupList.size(); i++) {
-			if(i==0) result=AggregationBuilders.terms(groupList.get(i).getName()).field(groupList.get(i).getName());
+			if(i==0){
+				result=AggregationBuilders.terms(groupList.get(i).getName()).field(groupList.get(i).getName());
+				if(i==groupList.size()-1){//最后一个列的group by 添加聚合函数
+					addAggregation(result,selectItems);
+				}
+			} 
 			else {
 				TermsBuilder helper=AggregationBuilders.terms(groupList.get(i).getName()).field(groupList.get(i).getName());
 				if(i==groupList.size()-1){//最后一个列的group by 添加聚合函数

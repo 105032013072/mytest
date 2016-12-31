@@ -35,6 +35,7 @@ import com.bosssoft.platform.es.jdbc.mate.AggValue;
 import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
 import com.bosssoft.platform.es.jdbc.mate.ColumnValue;
 import com.bosssoft.platform.es.jdbc.mate.ResultMate;
+import com.bosssoft.platform.es.jdbc.model.ConditionExp;
 import com.bosssoft.platform.es.jdbc.model.ESResultSet;
 
 /**
@@ -105,13 +106,12 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
      * select distinct
      * @param aggregation
      */
-    public void constructDistinct(Aggregations aggregations){
-    	System.out.println(aggregations.toString());
-    	List<Object> list=new ArrayList<>();
+    public ESResultSet constructDistinct(Aggregations aggregations){
+    	   List<Object> list=new ArrayList<>();
     	  
     		list=resolveAggs(aggregations.asList());
+    		return parserToResultSet(list);
     		
-    	System.out.println("1231");
     }
     
     /**
@@ -120,14 +120,18 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
      * @param list
      * @return
      */
-    public void constructGroupby (Aggregations aggregations){
+    public ESResultSet constructGroupby (Aggregations aggregations){
     	List<Object> list=new ArrayList<>();
   	  
 		list=resolveAggs(aggregations.asList());
+		return parserToResultSet(list);
+		
     }
     
 	private List<Object> resolveAggs(List<Aggregation> list) {
 		List<Object> result=new ArrayList<>();
+		Map<String,Object> columnMap=new HashMap<>();
+		Boolean flag=false;
     	for (Aggregation agg : list) {
     		if(agg instanceof Terms){
     			Terms aggterms=(Terms) agg;
@@ -148,15 +152,14 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
         				result.add(columnValue);
         			}
         		}
-    		}else{
+    		}else{//聚合函数
     			InternalNumericMetricsAggregation.SingleValue internalagg=(InternalNumericMetricsAggregation.SingleValue)agg;
-    			ColumnValue columnValue=new ColumnValue();
-    			columnValue.setField(internalagg.getName());
-    			columnValue.setValue(internalagg.value());
-    			result.add(columnValue);
+    			columnMap.put(internalagg.getName(), internalagg.value());
+               flag=true;
     		}
     		
     	}
+    	if(flag) result.add(columnMap);
     	return result;
 	}
 
@@ -177,15 +180,52 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
     	return result;
     }
 	
-	
-	private ESResultSet parser(List<ResultMate> list){
-    	ESResultSet result=new ESResultSet();
-    	for (ResultMate mate : list) {
-			
+    private ESResultSet parserToResultSet(List<Object> list){
+    	List<Map<String,Object>> reult=parser(list);
+    	ESResultSet set=new ESResultSet();
+    	for (Map<String, Object> map : reult) {
+			set.add(map);
 		}
-    	return result;
+    	return set;
     }
     
+	
+	private List<Map<String,Object>> parser(List<Object> list){
+		List<Map<String,Object>> result=new ArrayList<>();
+		if(list.get(0) instanceof ResultMate){
+			for (Object obj : list){
+				ResultMate mate=(ResultMate) obj;
+				List<Map<String,Object>> relastonList=parser(((ResultMate) obj).getBuckList());
+				for (Map<String, Object> map : relastonList) {
+					Map<String,Object> parentmap=new HashMap<>();
+					parentmap.put(mate.getField(), mate.getValue());
+					parentmap.putAll(map);
+					result.add(parentmap);
+				}
+			}
+		}else if(list.get(0) instanceof ColumnValue){
+			
+			for (Object obj : list){
+				Map<String,Object> columnMap=new HashMap<>();
+				ColumnValue columnValue=(ColumnValue) obj;
+				columnMap.put(columnValue.getField(), columnValue.getValue());
+				result.add(columnMap);
+			}
+			
+		}else{//map
+			result.add((Map<String, Object>) list.get(0));
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * 解析having
+	 */
+
+	public void resolveHaving(ESResultSet resultSet,ConditionExp having){
+		
+	}
 }
 
 /*

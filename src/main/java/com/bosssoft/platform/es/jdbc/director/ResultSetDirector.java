@@ -40,9 +40,13 @@ public class ResultSetDirector {
 		
 		//esResultSet=constructer.constructSelectColumn(response.getHits(), obj.getSelectItems());
 		
-		//constructer.constructDistinct(response.getAggregations());
-		//constructer.constructGroupby(response.getAggregations());
-		constructer.constructAggregation(response.getAggregations());
+		//esResultSet=constructer.constructDistinct(response.getAggregations());
+	//esResultSet=constructer.constructGroupby(response.getAggregations());
+		//esResultSet=constructer.constructAggregation(response.getAggregations());
+		
+		
+		//处理having
+		
 		return esResultSet;
 	}
 }

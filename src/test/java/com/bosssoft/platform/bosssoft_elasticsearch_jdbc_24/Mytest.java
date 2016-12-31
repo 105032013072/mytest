@@ -60,7 +60,7 @@ public class Mytest{
 	@Test
 	public void testCreateTable(){
 		try{
-			Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index+"?cluster.name=escluster");
+			Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 			Statement st = con.createStatement();
 			String sql = "CREATE TABLE usertest " +
 	                   "(user_no string," +
@@ -103,19 +103,19 @@ public class Mytest{
 			Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index+"?cluster.name=escluster");
 			Statement st = con.createStatement();
 			for(int i=0;i<3;i++){
-				User user=new User("u0"+i, "jason"+i+"号", "d"+0, 3200, 20+i);
+				User user=new User("u0"+i, "jason"+i+"号", "d"+0, 3200+i, 20+i);
 				String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
 				+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
 				st.addBatch(sql);
 			}
 			for(int i=0;i<3;i++){
-				User user=new User("u1"+i, "tom"+i+"号", "d"+1, 2200, 20+i);
+				User user=new User("u1"+i, "tom"+i+"号", "d"+1, 2200+i, 20+i);
 				String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
 				+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
 				st.addBatch(sql);
 			}
 			for(int i=0;i<3;i++){
-				User user=new User("u2"+i, "mical"+i+"号", "d"+2, 4200, 20+i);
+				User user=new User("u2"+i, "mical"+i+"号", "d"+2, 4200+i, 20+i);
 				String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
 				+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
 				st.addBatch(sql);
