@@ -67,6 +67,10 @@ public class ESResultSet {
 		resultList.add(map);
 	}
 	
+	public void remove(int index){
+		resultList.remove(index);
+	}
+	
 }
 
 /*

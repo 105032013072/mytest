@@ -169,7 +169,7 @@ public void test4(){
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	
-		      	ResultSet rs = st.executeQuery("SELECT dept_no,MAX(user_salary) as max FROM user group by dept_no having max>2000");
+		      	ResultSet rs = st.executeQuery("SELECT dept_no,MAX(user_salary) as max FROM user group by dept_no having max>3000 and dept_no='d2'");
 		       	 ResultSetMetaData rsmd = rs.getMetaData();
 		       	 int nrCols = rsmd.getColumnCount();
 		       	 while(rs.next()){

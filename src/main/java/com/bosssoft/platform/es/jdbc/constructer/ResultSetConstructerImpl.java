@@ -14,6 +14,7 @@
 
 package com.bosssoft.platform.es.jdbc.constructer;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,9 +35,14 @@ import org.elasticsearch.search.aggregations.metrics.max.InternalMax;
 import com.bosssoft.platform.es.jdbc.mate.AggValue;
 import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
 import com.bosssoft.platform.es.jdbc.mate.ColumnValue;
+import com.bosssoft.platform.es.jdbc.mate.Inequality;
 import com.bosssoft.platform.es.jdbc.mate.ResultMate;
 import com.bosssoft.platform.es.jdbc.model.ConditionExp;
 import com.bosssoft.platform.es.jdbc.model.ESResultSet;
+import com.facebook.presto.sql.tree.DoubleLiteral;
+import com.facebook.presto.sql.tree.LongLiteral;
+import com.facebook.presto.sql.tree.StringLiteral;
+import com.fasterxml.jackson.databind.deser.ValueInstantiator;
 
 /**
  * TODO 此处填写 class 信息
@@ -221,10 +227,156 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
 	
 	/**
 	 * 解析having
+	 * @throws SQLException 
 	 */
 
-	public void resolveHaving(ESResultSet resultSet,ConditionExp having){
+	public void resolveHaving(ESResultSet resultSet,ConditionExp having) throws SQLException{
+		List<Map<String, Object>> resulyList=resultSet.getResultList();
+		List<Map<String,Object>> matchList=new ArrayList<>();
+		for(int i=0;i<resulyList.size();i++){
+			if(isMatch(resulyList.get(i), having)){
+				//匹配
+				matchList.add(resulyList.get(i));
+			}
+		}
+         
+		resultSet.setResultList(matchList);
+	}
+	
+	private boolean isMatch(Map<String,Object> result,ConditionExp obj) throws SQLException{
+		Object exp=obj.getExpression();
 		
+		if(exp instanceof Inequality){
+			Inequality inequality=(Inequality) exp;
+			return InequalityCompaire(inequality, result);
+			
+		}else if(exp instanceof ConditionExp){
+			ConditionExp conditionExp=(ConditionExp) exp;
+			if("AND".equals(conditionExp.getRelation())){
+				return isMatch(result, (ConditionExp)conditionExp.getExpression())&&isMatch(result, (ConditionExp)conditionExp.getNext());
+			}else{
+				return isMatch(result, (ConditionExp)conditionExp.getExpression())||isMatch(result, (ConditionExp)conditionExp.getNext());
+			}
+			
+		}else{
+			throw new SQLException("having condition is wrong");
+		}
+	}
+	
+	
+	
+	//不等式比较
+	private Boolean InequalityCompaire(Inequality inequality,Map<String,Object> result){
+		String operation=inequality.getOperation();//>= = ><=,!=
+		String filed=inequality.getFiled();
+		Object level=inequality.getValue();
+		String target=String.valueOf(result.get(filed));
+		if("GREATER_THAN_OR_EQUAL".equals(operation)){//>=
+			if(level instanceof StringLiteral){
+				String levelValue=((StringLiteral)level).getValue();
+				if(target.compareToIgnoreCase(levelValue)>=0) return true;
+				else return false;
+			}else if (level instanceof DoubleLiteral){
+				double levelValue=((DoubleLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue>=levelValue) return true;
+				else return false;
+			}else {
+				long levelValue=((LongLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue>=levelValue) return true;
+				else return false;
+			}
+		
+		}else if("EQUAL".equals(operation)){
+			
+			if(level instanceof StringLiteral){
+				String levelValue=((StringLiteral)level).getValue();
+				if(target.equals(levelValue)) return true;
+				else return false;
+			}else if (level instanceof DoubleLiteral){
+				double levelValue=((DoubleLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue==levelValue) return true;
+				else return false;
+			}else {
+				long levelValue=((LongLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue==levelValue) return true;
+				else return false;
+			}
+			
+		}else if("GREATER_THAN".equals(operation)){
+			
+			if(level instanceof StringLiteral){
+				String levelValue=((StringLiteral)level).getValue();
+				if(target.compareToIgnoreCase(levelValue)>0) return true;
+				else return false;
+			}else if (level instanceof DoubleLiteral){
+				double levelValue=((DoubleLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue>levelValue) return true;
+				else return false;
+			}else {
+				long levelValue=((LongLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue>levelValue) return true;
+				else return false;
+			}
+			
+		}else if ("LESS_THAN_OR_EQUAL".equals(operation)) {//<=
+			
+			if(level instanceof StringLiteral){
+				String levelValue=((StringLiteral)level).getValue();
+				if(target.compareToIgnoreCase(levelValue)<=0) return true;
+				else return false;
+			}else if (level instanceof DoubleLiteral){
+				double levelValue=((DoubleLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue<=levelValue) return true;
+				else return false;
+			}else {
+				long levelValue=((LongLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue<=levelValue) return true;
+				else return false;
+			}
+			
+		}else if("LESS_THAN".equals(operation)){
+			
+			if(level instanceof StringLiteral){
+				String levelValue=((StringLiteral)level).getValue();
+				if(target.compareToIgnoreCase(levelValue)<0) return true;
+				else return false;
+			}else if (level instanceof DoubleLiteral){
+				double levelValue=((DoubleLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue<levelValue) return true;
+				else return false;
+			}else {
+				long levelValue=((LongLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue<levelValue) return true;
+				else return false;
+			}
+		
+		}else {//!=
+			if(level instanceof StringLiteral){
+				String levelValue=((StringLiteral)level).getValue();
+				if(target.equals(levelValue)) return false;
+				else return true;
+			}else if (level instanceof DoubleLiteral){
+				double levelValue=((DoubleLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue!=levelValue) return true;
+				else return false;
+			}else {
+				long levelValue=((LongLiteral)level).getValue();
+				double targetvalue=Double.parseDouble(target);
+				if(targetvalue!=levelValue) return true;
+				else return false;
+			}
+		}
 	}
 }
 

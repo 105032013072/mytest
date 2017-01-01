@@ -14,6 +14,8 @@
 
 package com.bosssoft.platform.es.jdbc.director;
 
+import java.sql.SQLException;
+
 import org.elasticsearch.action.search.SearchResponse;
 
 import com.bosssoft.platform.es.jdbc.constructer.ResultSetConstructer;
@@ -34,19 +36,19 @@ public class ResultSetDirector {
 		this.constructer=constructer;
 	}
 	
-	public ESResultSet construct(SearchResponse response,SelectSqlObj obj){
+	public ESResultSet construct(SearchResponse response,SelectSqlObj obj) throws SQLException{
 		ESResultSet esResultSet=null;
 		//esResultSet=constructer.constructAllColumn(response.getHits());
 		
 		//esResultSet=constructer.constructSelectColumn(response.getHits(), obj.getSelectItems());
 		
 		//esResultSet=constructer.constructDistinct(response.getAggregations());
-	//esResultSet=constructer.constructGroupby(response.getAggregations());
+	   esResultSet=constructer.constructGroupby(response.getAggregations());
 		//esResultSet=constructer.constructAggregation(response.getAggregations());
 		
 		
 		//处理having
-		
+		constructer.resolveHaving(esResultSet, obj.getHaving());
 		return esResultSet;
 	}
 }
