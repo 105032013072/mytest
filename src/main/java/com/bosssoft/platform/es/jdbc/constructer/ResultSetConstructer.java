@@ -17,6 +17,7 @@ package com.bosssoft.platform.es.jdbc.constructer;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
@@ -37,7 +38,7 @@ public interface ResultSetConstructer {
 	
 	public ESResultSet constructSelectColumn(SearchHits hits,List<ColumnMate> selectItems);
 	
-	 public ESResultSet constructDistinct(Aggregations aggregations);
+	public ESResultSet constructDistinct(SearchResponse response,List<ColumnMate> selectItems);
 	 
 	 public ESResultSet constructGroupby (Aggregations aggregations);
 	 

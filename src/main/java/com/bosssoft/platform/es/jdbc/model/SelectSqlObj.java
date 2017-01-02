@@ -113,7 +113,7 @@ public class SelectSqlObj {
 	
 	public  Boolean hasAggregation(){
 		for (ColumnMate columnMate : selectItems) {
-			if(!AggType.NONE.equals(columnMate.getAggType())) return true;
+			if(!AggType.NONE.equals(columnMate.getAggType())&&!distinct) return true;
 		}
 		return false;
 	}

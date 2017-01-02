@@ -106,8 +106,12 @@ public class SearchConverterImpl implements SearchConverter{
 	            //设置别名
 	            if(sc.getAlias().isPresent())
 	                 columnMate.setAlias(sc.getAlias().get().toString());
-	            else{//没有设置别名：默认字段名为别名
-	            	columnMate.setAlias(columnMate.getName());
+	            else{//没有设置别名：非聚合函数：字段名    聚合函数：function(字段名)
+	            	if(AggType.NONE.equals(columnMate.getAggType())){
+	            		columnMate.setAlias(columnMate.getName());
+	            	}else{
+	            		columnMate.setAlias(buildAlise(columnMate.getAggType(), columnMate.getName()));
+	            	} 
 	            }
 			}
 			
@@ -314,6 +318,11 @@ public class SearchConverterImpl implements SearchConverter{
 	
 	private String parserField(Expression e){
 		return ((QualifiedNameReference)e).getName().toString();
+	}
+	
+	//构建别名
+	private String buildAlise(AggType aggType,String filed){
+		return aggType.toString()+"("+filed+")";
 	}
 }
 

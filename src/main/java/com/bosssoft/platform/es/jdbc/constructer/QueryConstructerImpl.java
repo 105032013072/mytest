@@ -58,16 +58,26 @@ public class QueryConstructerImpl implements QueryConstructer{
 	private static Judger judger=new Judger();
 
 	/**
-	 * distinct 处理
+	 * distinct 处理:聚合函数不处理
 	 * @param obj
 	 * @return
 	 */
 	public AggregationBuilder distinctConstruct(List<ColumnMate> selectItems){
 		TermsBuilder result=null;
-		for(int i=0;i<selectItems.size();i++){
-		   if(i==0) result=getDistinctTerm(selectItems.get(i));
-		   else result=result.subAggregation(getDistinctTerm(selectItems.get(i)));
+		int index=0;
+		for (ColumnMate columnMate : selectItems) {
+			if(!AggType.NONE.equals(columnMate.getAggType())) continue;
+			if(index==0) {
+				result=getDistinctTerm(columnMate);
+				index++;
+			}
+			else{
+				result=result.subAggregation(getDistinctTerm(columnMate));
+				index++;
+			}
 		}
+		
+		
 		return result;
  }
 	
@@ -83,7 +93,7 @@ public class QueryConstructerImpl implements QueryConstructer{
 		FilterAggregationBuilder result = AggregationBuilders.filter("aggregationfilter").filter(queryBuilder);
 		
 		for (ColumnMate columnMate : selectItems) {
-			if(!AggType.NONE.equals(columnMate.getAggType())&&!"*".equals(columnMate.getName())){//* 的聚合函数在结果集中处理
+			if(!AggType.NONE.equals(columnMate.getAggType())){
 				result.subAggregation(getAggregateTerm(columnMate));
 			}
 		}
@@ -107,7 +117,7 @@ public class QueryConstructerImpl implements QueryConstructer{
 		else if(AggType.MAX.equals(aggType))
 			builder=AggregationBuilders.max(aggName).field(columnMate.getName());
 		else if(AggType.COUNT.equals(aggType))
-			builder=AggregationBuilders.count(aggName).field(columnMate.getName());
+			builder=AggregationBuilders.count(aggName).field("_type");
 		else throw new SQLException("illegal Aggregate function");
 		return builder;
 	}

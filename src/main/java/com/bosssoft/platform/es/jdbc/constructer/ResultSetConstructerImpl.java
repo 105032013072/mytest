@@ -32,6 +32,7 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.InternalNumericMetricsAggregation;
 import org.elasticsearch.search.aggregations.metrics.max.InternalMax;
 
+import com.bosssoft.platform.es.jdbc.enumeration.AggType;
 import com.bosssoft.platform.es.jdbc.mate.AggValue;
 import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
 import com.bosssoft.platform.es.jdbc.mate.ColumnValue;
@@ -101,22 +102,26 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
     	return false;
     }
     
-    /**
-     * count（*）
-     */
-    public void constructCount(SearchHits hits){
-    	
-    }
     
     /**
      * select distinct
      * @param aggregation
      */
-    public ESResultSet constructDistinct(Aggregations aggregations){
+    public ESResultSet constructDistinct(SearchResponse response,List<ColumnMate> selectItems){
     	   List<Object> list=new ArrayList<>();
-    	  
-    		list=resolveAggs(aggregations.asList());
-    		return parserToResultSet(list);
+    		list=resolveAggs(response.getAggregations().asList());
+    		
+    		ESResultSet set=parserToResultSet(list);
+    		
+    		//添加count(*)
+    		String countfile=findCount(selectItems);
+    		if(countfile!=null){
+    			List<Map<String, Object>> setlist=set.getResultList();
+    			for (Map<String, Object> map : setlist) {
+					map.put(countfile, response.getHits().getTotalHits());
+				}
+    		}
+    		return set;
     		
     }
     
@@ -160,7 +165,8 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
         		}
     		}else{//聚合函数
     			InternalNumericMetricsAggregation.SingleValue internalagg=(InternalNumericMetricsAggregation.SingleValue)agg;
-    			columnMap.put(internalagg.getName(), internalagg.value());
+    			columnMap.put(internalagg.getName(), internalagg.value());	
+    			
                flag=true;
     		}
     		
@@ -377,6 +383,15 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
 				else return false;
 			}
 		}
+	}
+	
+	private String findCount(List<ColumnMate> selectItems){
+		for (ColumnMate columnMate : selectItems) {
+			if(AggType.COUNT.equals(columnMate.getAggType())){
+				return columnMate.getAlias();
+			}
+		}
+		return null;
 	}
 }
 

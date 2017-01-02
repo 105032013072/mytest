@@ -79,7 +79,7 @@ public class MakeTest {
 		 try {
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
-		      	ResultSet rs = st.executeQuery("SELECT  distinct user_salary,user_no from user");
+		      	ResultSet rs = st.executeQuery("SELECT  distinct user_salary ,count(*)from user");
 		      	while(rs.next()){
 		       		System.out.println("user_salary:"+rs.getFloat("user_salary"));
 		       	 }
@@ -98,7 +98,7 @@ public class MakeTest {
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
-		      	ResultSet rs = st.executeQuery("SELECT min(user_salary) as min,MAX(user_salary) from user");
+		      	ResultSet rs = st.executeQuery("SELECT min(user_salary) as min,MAX(user_salary),count(*) from user");
 		      	while(rs.next()){
 		       		System.out.println("total:"+rs.getFloat("total"));
 		       		System.out.println("min:"+rs.getDouble("min"));
@@ -169,7 +169,7 @@ public void test4(){
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	
-		      	ResultSet rs = st.executeQuery("SELECT dept_no,MAX(user_salary) as max FROM user group by dept_no having max>3000 and dept_no='d2'");
+		      	ResultSet rs = st.executeQuery("SELECT dept_no,count(*) FROM user group by dept_no");
 		       	 ResultSetMetaData rsmd = rs.getMetaData();
 		       	 int nrCols = rsmd.getColumnCount();
 		       	 while(rs.next()){
