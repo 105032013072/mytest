@@ -14,6 +14,8 @@
 
 package com.bosssoft.platform.es.jdbc.director;
 
+import java.net.URISyntaxException;
+
 import com.bosssoft.platform.es.jdbc.constructer.UpdateConstructer;
 
 /**
@@ -28,6 +30,16 @@ public class UpdateDirector {
 	
 	public UpdateDirector(UpdateConstructer builder){
 		this.builder=builder;
+	}
+	
+	public String buildCreate(String table,String index) {
+		try {
+			return builder.buildCreate(table, index);
+		} catch (URISyntaxException e) {
+			
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
 

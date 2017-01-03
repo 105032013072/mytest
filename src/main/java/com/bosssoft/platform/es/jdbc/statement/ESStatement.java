@@ -14,6 +14,7 @@
 
 package com.bosssoft.platform.es.jdbc.statement;
 
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -40,6 +41,7 @@ import com.bosssoft.platform.es.jdbc.model.ESResultSet;
 import com.bosssoft.platform.es.jdbc.model.QueryBody;
 import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 import com.facebook.presto.sql.parser.SqlParser;
+import com.facebook.presto.sql.tree.CreateTable;
 
 /**
  * TODO 此处填写 class 信息
@@ -111,9 +113,25 @@ public class ESStatement implements Statement{
 	 * @see java.sql.Statement#executeUpdate(java.lang.String)
 	 */
 	@Override
-	public int executeUpdate(String sql) throws SQLException {
-		sql=sql.replace(" ", "");
-		String formatSql=hashLimit(sql);
+	public int executeUpdate(String sql) throws SQLException{
+		sql = sql.replaceAll("\r", " ").replaceAll("\n", " ").trim().toLowerCase();
+		if(sql.startsWith("create")){
+			String helpesql=sql+"(_id integer)";//借助新字符串来转换，以获取表名
+			CreateTable statement = (CreateTable) sqlparser.createStatement(helpesql);
+			String tableName=statement.getName().toString();
+			//构建mapping
+		    String mapping=updateDirector.buildCreate(tableName, connection.getIndex());
+		    
+		    //调用es 建立mapping
+		    ESClient esClient=connection.getEsClient();
+		    esClient.createType(connection.getIndex(), mapping, tableName);
+		    
+		}
+		else if(sql.startsWith("update"));
+		else if(sql.startsWith("insert"));
+		else{//删除
+			
+		}
 		return 0;
 	}
 

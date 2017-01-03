@@ -46,13 +46,17 @@ public class ESClient {
 	
 	private TransportClient client;
 	
+	private Settings settings;
+	
 	public ESClient(String host,Integer port){
 		this.host=host;
 		this.port=port;
 		
 		try{
-			Settings.Builder settingsBuilder = Settings.settingsBuilder();
-			Settings settings = settingsBuilder.build();
+			settings = Settings.builder()
+	                .put("number_of_shards", 1)
+	                .put("number_of_replicas", 0)
+	                .build();
 		 client = TransportClient.builder().settings(settings).build()
 				.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host),9300));
 		}catch(Exception e){
@@ -88,6 +92,13 @@ public class ESClient {
   		
   		return searchResponse;
   		
+	}
+	
+	/**
+	 * 创建索引
+	 */
+	public void createType(String indexName,String mapping,String typeName){
+		client.admin().indices().preparePutMapping(indexName).setType(typeName) .setSource(mapping).execute().actionGet();
 	}
 	
 	

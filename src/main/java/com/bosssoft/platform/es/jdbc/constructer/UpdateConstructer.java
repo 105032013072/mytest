@@ -14,6 +14,8 @@
 
 package com.bosssoft.platform.es.jdbc.constructer;
 
+import java.net.URISyntaxException;
+
 /**
  * TODO 此处填写 class 信息
  *
@@ -21,7 +23,9 @@ package com.bosssoft.platform.es.jdbc.constructer;
  */
 
 public interface UpdateConstructer {
-
+	
+	public  String buildCreate(String table,String index) throws URISyntaxException;
+    
 }
 
 /*
