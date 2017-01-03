@@ -317,12 +317,22 @@ public class SearchConverterImpl implements SearchConverter{
 
 	
 	private String parserField(Expression e){
-		return ((QualifiedNameReference)e).getName().toString();
+		if(e instanceof FunctionCall){
+			FunctionCall call=(FunctionCall) e;
+			List<Expression> list=call.getArguments();
+			if(list.size()==0) return call.getName()+"("+"*"+")";
+			else return call.getName()+"("+parserField(list.get(0))+")";
+		}else{
+			return ((QualifiedNameReference)e).getName().toString();
+		}
+		
+		
+		
 	}
 	
 	//构建别名
 	private String buildAlise(AggType aggType,String filed){
-		return aggType.toString()+"("+filed+")";
+		return (aggType.toString()+"("+filed+")").toLowerCase();
 	}
 }
 

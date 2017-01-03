@@ -185,10 +185,13 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
     	Aggregation agg=aggregations.asList().get(0);
     	InternalFilter aggfilter=(InternalFilter) agg;
     	List<Aggregation> aggList=aggfilter.getAggregations().asList();
+    	Map<String,Object> map=new HashMap<>();
     	for (Aggregation aggregation : aggList) {
     		InternalNumericMetricsAggregation.SingleValue internalagg=(InternalNumericMetricsAggregation.SingleValue)aggregation ;
-		    result.add(internalagg.getName(), internalagg.value());
+    		map.put(internalagg.getName(), internalagg.value());
+		    
     	}
+    	result.add(map);
     	return result;
     }
 	
