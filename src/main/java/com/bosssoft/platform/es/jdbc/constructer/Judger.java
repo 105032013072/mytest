@@ -17,6 +17,7 @@ package com.bosssoft.platform.es.jdbc.constructer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.facebook.presto.sql.tree.BooleanLiteral;
 import com.facebook.presto.sql.tree.DoubleLiteral;
 import com.facebook.presto.sql.tree.Expression;
 import com.facebook.presto.sql.tree.LongLiteral;
@@ -57,5 +58,12 @@ public class Judger {
 			result=literal.getValue();
 		 }
 		return result;
+	}
+	
+	public Object judgeValueType(Expression expression){
+		if(expression instanceof LongLiteral) return ((LongLiteral)expression).getValue();
+		else if(expression instanceof BooleanLiteral) return ((BooleanLiteral)expression).getValue();
+		else if(expression instanceof DoubleLiteral) return ((DoubleLiteral)expression).getValue();
+		else  return ((StringLiteral)expression).getValue();
 	}
 }

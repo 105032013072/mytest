@@ -15,6 +15,10 @@
 package com.bosssoft.platform.es.jdbc.constructer;
 
 import java.net.URISyntaxException;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import com.bosssoft.platform.es.jdbc.model.UpdateSqlObj;
 
 /**
  * TODO 此处填写 class 信息
@@ -25,6 +29,8 @@ import java.net.URISyntaxException;
 public interface UpdateConstructer {
 	
 	public  String buildCreate(String table,String index) throws URISyntaxException;
+	
+	public UpdateSqlObj buildUpdateObj(String sql,String index,Statement esStatement) throws SQLException;
     
 }
 

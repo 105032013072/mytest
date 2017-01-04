@@ -17,7 +17,7 @@ package com.bosssoft.platform.es.jdbc.mate;
 import com.bosssoft.platform.es.jdbc.enumeration.AggType;
 
 /**
- * TODO 此处填写 class 信息
+ * TODO 目标列
  *
  * @author huangxuewen (mailto:huangxuewen@bosssoft.com.cn)
  */

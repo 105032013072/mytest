@@ -31,7 +31,7 @@ import com.bosssoft.platform.es.jdbc.enumeration.AggType;
  * @author huangxuewen (mailto:huangxuewen@bosssoft.com.cn)
  */
 
-public class MakeTest {
+public class updateTest {
  
 	
    private String index="demo";
@@ -48,27 +48,16 @@ public class MakeTest {
 			
 		}
 	 
-	 //简单查询(测试获取结果)
+	 //更新
 	 @Test
 	 public void test0(){
 		 try {
 			 //集群名为：escluster
 			 Connection con = DriverManager.
 					 getConnection("jdbc:es://localhost:9300/"+index);
-		      	//ResultSet rs = st.executeQuery("SELECT * FROM uab_agen_item where tfname ='测试3' limit 2,3");
 			 
 			 Statement st = con.createStatement(); 	
-			 
-			 ResultSet rs = st.executeQuery("SELECT _id, user_salary FROM user where user_salary between 3000 and 4200 order by user_no");
-			 ResultSetMetaData metaData=rs.getMetaData();
-			 int ncols=metaData.getColumnCount();
-		      while(rs.next()){
-		    	  for (int i=1;i<=ncols;i++) {
-		    		  System.out.print(metaData.getColumnName(i)+": "+rs.getObject(i)+"   ");
-				}
-		    	  System.out.println();//换行
-		      }
-		       rs.close();
+			 st.executeUpdate("UPDATE user SET user_name='aaaa'"); 
 		       con.close();
 			} catch (Exception e) {
 				e.printStackTrace();

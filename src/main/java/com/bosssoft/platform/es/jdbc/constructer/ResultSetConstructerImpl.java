@@ -86,6 +86,8 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
 					if(!isNeed(key, selectItems)) continue;
 					help.put(key, map.get(key));
 				}
+				if(hashdocId(selectItems)) help.put("_id", hit.getId());
+				
 				resultSet.add(help);
 				
 			} 
@@ -102,6 +104,14 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
     	return false;
     }
     
+    //是否需要获取文档id
+    private Boolean hashdocId(List<ColumnMate> selectItems){
+    	for (ColumnMate columnMate : selectItems) {
+    		String filed=columnMate.getName();
+    		if("_id".equals(filed)) return true;
+		}
+    	return false;
+    }
     
     /**
      * select distinct

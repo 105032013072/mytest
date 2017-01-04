@@ -127,7 +127,9 @@ public class ESStatement implements Statement{
 		    esClient.createType(connection.getIndex(), mapping, tableName);
 		    
 		}
-		else if(sql.startsWith("update"));
+		else if(sql.startsWith("update")){
+			updateDirector.buildUpdate(sql, connection.getIndex(), this);
+		}
 		else if(sql.startsWith("insert"));
 		else{//删除
 			
