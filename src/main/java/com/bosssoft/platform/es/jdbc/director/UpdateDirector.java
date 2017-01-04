@@ -21,6 +21,7 @@ import java.sql.Statement;
 import com.bosssoft.platform.es.jdbc.constructer.UpdateConstructer;
 import com.bosssoft.platform.es.jdbc.driver.ESClient;
 import com.bosssoft.platform.es.jdbc.driver.ESConnection;
+import com.bosssoft.platform.es.jdbc.model.InsertSqlObj;
 import com.bosssoft.platform.es.jdbc.model.UpdateSqlObj;
 
 /**
@@ -59,17 +60,17 @@ public class UpdateDirector {
 	 * @param index
 	 * @throws SQLException 
 	 */
-	public  void buildUpdate(String sql,String index,Statement esStatement) throws SQLException{
+	public UpdateSqlObj  buildUpdate(String sql,String index,Statement esStatement) throws SQLException{
 	 
 		//封装更新信息
 		UpdateSqlObj updateSqlObj=builder.buildUpdateObj(sql, index, esStatement);
+		return updateSqlObj;
 		
-		//调用es客户端
-		ESConnection con=(ESConnection) esStatement.getConnection();
-		ESClient esClient=con.getEsClient();
-		for (String id : updateSqlObj.getIds()) {
-			esClient.updateDoc(index, updateSqlObj.getType(), updateSqlObj.getUpdateList(), id);
-		}
+	}
+	
+	public InsertSqlObj buildInsert(com.facebook.presto.sql.tree.Statement statement,String index) throws SQLException{
+		return builder.buildInsertObj(statement);
+		
 	}
 }
 

@@ -65,114 +65,27 @@ public class updateTest {
 	 }
 	 
 	 
-	 //distinct
-	 @Test
-	 public void test1(){
-		 try {
-			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
-		      	Statement st = con.createStatement();
-		      	ResultSet rs = st.executeQuery("SELECT  distinct dept_no from user");
-		      	while(rs.next()){
-		       		System.out.println("dept_no:"+rs.getString("dept_no"));
-		       	 }
-		       	 rs.close();
-		       	 con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-	 }
+
 	 
 	 
 	 @Test
-	 //聚合函数
+	 //insert
 	 public void test2(){
 		 try {
-			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
-		      	Statement st = con.createStatement();
-		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
-		      	ResultSet rs = st.executeQuery("SELECT min(user_salary) as min,MAX(user_salary) as max,count(*) from user where user_salary<2900");
-		      	while(rs.next()){
-		       		System.out.println("count(*):"+rs.getFloat("count(*)"));
-		       		System.out.println("min:"+rs.getDouble("min"));
-		       		System.out.println("max:"+rs.getDouble("max"));
-		       	 }
-		       	 rs.close();
-		       	 con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-	 }
-	 
-	 @Test
-	 //in
-	 public void test3(){
-		 try {
-			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
-		      	Statement st = con.createStatement();
-		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
-		      	ResultSet rs = st.executeQuery("SELECT * from user where dept_no in ('d0','d1') order by user_no");
-		      	ResultSetMetaData metaData=rs.getMetaData();
-				 int ncols=metaData.getColumnCount();
-			      while(rs.next()){
-			    	  for (int i=1;i<=ncols;i++) {
-			    		  System.out.print(metaData.getColumnName(i)+": "+rs.getObject(i)+"   ");
-					}
-			    	  System.out.println();//换行
-			      }
-		       	 rs.close();
-		       	 con.close();
+			 //集群名为：escluster
+			 Connection con = DriverManager.
+					 getConnection("jdbc:es://localhost:9300/"+index);
+			 
+			 Statement st = con.createStatement(); 	
+			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values("
+						+"\'"+"n01"+"\'"+","+"\'"+"newname"+"\'"+","+"\'"+"d3"+"\'"+","+5000+","+38+")";
+			 st.executeUpdate(sql); 
+		       con.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 	 }
 
-
-//多条件查询
-@Test
-public void test4(){
-	 try {
-		 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
-	      	Statement st = con.createStatement();
-	      	
-	      	
-	      	
-	      	ResultSet rs = st.executeQuery("SELECT user_no FROM user where (user_salary=2200 and user_age=20) or (dept_no='d1' and user_age=21)");
-	       	 ResultSetMetaData rsmd = rs.getMetaData();
-	       	 int nrCols = rsmd.getColumnCount();
-	       	 // get other column information like type
-	       	 while(rs.next()){
-	       		System.out.print(rs.getString("user_no"));
-	       	    
-	       	     System.out.println();
-	       	 }
-	       	 rs.close();
-	       	 con.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-}
-
-
-//group by and HAVING
-	 @Test
-	 public void test5(){
-		 try {
-			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
-		      	Statement st = con.createStatement();
-		      	
-		      	ResultSet rs = st.executeQuery("SELECT dept_no,count(*) FROM user group by dept_no having count(*)>2");
-		      	//ResultSet rs = st.executeQuery("SELECT dept_no,max(user_salary) FROM user group by dept_no");
-		       	while(rs.next()){ 
-		       		System.out.print(rs.getString("dept_no")+" ");
-		       		System.out.println(rs.getFloat("count(*)"));
-		       	 }
-		       	 rs.close();
-		       	 con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-	 }
 }
 
 /*

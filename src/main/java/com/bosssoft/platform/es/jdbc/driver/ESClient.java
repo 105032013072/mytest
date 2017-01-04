@@ -18,6 +18,8 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 
+import org.elasticsearch.action.index.IndexRequestBuilder;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
@@ -129,8 +131,27 @@ public class ESClient {
     	}catch(Exception e){
     		e.printStackTrace();
     	}
-    	
-    	
+ 
+    }
+    
+    /**
+     * 索引文档（insert）
+     * @param index
+     * @param type
+     * @param columns
+     */
+    public void IndexDoc(String index,String type,List<ColumnValue> columns){
+    	try {
+    		IndexRequestBuilder indexRequestBuilder = client.prepareIndex(index, type);
+    		XContentBuilder builder = jsonBuilder().startObject();
+        	for (ColumnValue columnValue : columns) {
+				builder.field(columnValue.getField(), columnValue.getValue());
+			}
+        	builder.endObject();
+        	indexRequestBuilder.setSource(builder).get();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 	
 	

@@ -25,12 +25,20 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bosssoft.platform.es.jdbc.model.InsertSqlObj;
 import com.bosssoft.platform.es.jdbc.model.UpdateSqlObj;
 import com.facebook.presto.sql.parser.SqlParser;
 import com.facebook.presto.sql.tree.ComparisonExpression;
+import com.facebook.presto.sql.tree.Expression;
+import com.facebook.presto.sql.tree.Insert;
+import com.facebook.presto.sql.tree.QueryBody;
+import com.facebook.presto.sql.tree.Row;
+import com.facebook.presto.sql.tree.Values;
+import com.fasterxml.jackson.annotation.JsonFormat.Value;
 
 /**
  * TODO 此处填写 class 信息
@@ -113,6 +121,26 @@ public class UpdateConstructerImpl implements UpdateConstructer{
 		return updateSqlObj;
 	}
 	
+	public InsertSqlObj buildInsertObj(com.facebook.presto.sql.tree.Statement statement)throws SQLException{
+		InsertSqlObj insertSqlObj=new InsertSqlObj();
+		
+		Insert insert=(Insert) statement;
+		
+		insertSqlObj.setType(insert.getTarget().toString());
+		List<String> columns=insert.getColumns().get();
+		
+		Values value=(Values) insert.getQuery().getQueryBody();
+		Expression exp=value.getRows().get(0);
+		List<Expression> list=((Row)exp).getItems();
+		
+		for (int i = 0; i < columns.size(); i++) {
+			String key=columns.get(i);
+			Object obj=judger.judgeValueType(list.get(i));
+			insertSqlObj.addValue(key, obj);
+		}
+	
+		return insertSqlObj;
+	}
 	
 }
 

@@ -38,8 +38,10 @@ import com.bosssoft.platform.es.jdbc.driver.ESClient;
 import com.bosssoft.platform.es.jdbc.driver.ESConnection;
 import com.bosssoft.platform.es.jdbc.mate.InExpression;
 import com.bosssoft.platform.es.jdbc.model.ESResultSet;
+import com.bosssoft.platform.es.jdbc.model.InsertSqlObj;
 import com.bosssoft.platform.es.jdbc.model.QueryBody;
 import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
+import com.bosssoft.platform.es.jdbc.model.UpdateSqlObj;
 import com.facebook.presto.sql.parser.SqlParser;
 import com.facebook.presto.sql.tree.CreateTable;
 
@@ -128,9 +130,22 @@ public class ESStatement implements Statement{
 		    
 		}
 		else if(sql.startsWith("update")){
-			updateDirector.buildUpdate(sql, connection.getIndex(), this);
+			UpdateSqlObj updateSqlObj=updateDirector.buildUpdate(sql, connection.getIndex(), this);
+			
+			//调用esclient
+			ESClient esClient=connection.getEsClient();
+			for (String id : updateSqlObj.getIds()) {
+				esClient.updateDoc(connection.getIndex(), updateSqlObj.getType(), updateSqlObj.getUpdateList(), id);
+			}
 		}
-		else if(sql.startsWith("insert"));
+		else if(sql.startsWith("insert")){
+			com.facebook.presto.sql.tree.Statement statement = sqlparser.createStatement(sql);
+			InsertSqlObj sqlObj=updateDirector.buildInsert(statement,connection.getIndex());
+			
+			//调用esclient
+			ESClient esClient=connection.getEsClient();
+			esClient.IndexDoc(connection.getIndex(), sqlObj.getType(), sqlObj.getValueList());
+		}
 		else{//删除
 			
 		}
