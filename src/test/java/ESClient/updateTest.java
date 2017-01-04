@@ -85,6 +85,24 @@ public class updateTest {
 				e.printStackTrace();
 			}
 	 }
+	 
+	//delete
+	 @Test
+		 public void test3(){
+			 try {
+				 //集群名为：escluster
+				 Connection con = DriverManager.
+						 getConnection("jdbc:es://localhost:9300/"+index);
+				 
+				 Statement st = con.createStatement(); 	
+				 String sql="delete from user";
+				 //String sql="delete from user";
+				 st.executeUpdate(sql); 
+			       con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		 }
 
 }
 

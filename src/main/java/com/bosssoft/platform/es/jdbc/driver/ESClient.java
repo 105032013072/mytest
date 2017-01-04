@@ -153,6 +153,16 @@ public class ESClient {
 			e.printStackTrace();
 		}
     }
+    
+    /**
+     * 删除文档
+     * @param index
+     * @param type
+     * @param id
+     */
+    public void deleteDoc(String index,String type,String id){
+    	client.prepareDelete(index, type, id).get();
+    }
 	
 	
 	public void close(){

@@ -21,6 +21,7 @@ import java.sql.Statement;
 import com.bosssoft.platform.es.jdbc.constructer.UpdateConstructer;
 import com.bosssoft.platform.es.jdbc.driver.ESClient;
 import com.bosssoft.platform.es.jdbc.driver.ESConnection;
+import com.bosssoft.platform.es.jdbc.model.DeleteSqlObj;
 import com.bosssoft.platform.es.jdbc.model.InsertSqlObj;
 import com.bosssoft.platform.es.jdbc.model.UpdateSqlObj;
 
@@ -68,9 +69,29 @@ public class UpdateDirector {
 		
 	}
 	
+	/**
+	 * 插入数据
+	 * @param statement
+	 * @param index
+	 * @return
+	 * @throws SQLException
+	 */
 	public InsertSqlObj buildInsert(com.facebook.presto.sql.tree.Statement statement,String index) throws SQLException{
 		return builder.buildInsertObj(statement);
 		
+	}
+	
+	/**
+	 * 删除数据
+	 * @param sql
+	 * @param esStatement
+	 * @return
+	 * @throws SQLException
+	 */
+	public DeleteSqlObj buildDelete(String sql,Statement esStatement) throws SQLException{
+		
+		return builder.builddeleteObj(sql, esStatement);
+		 
 	}
 }
 

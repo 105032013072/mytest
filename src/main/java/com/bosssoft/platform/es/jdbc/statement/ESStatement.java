@@ -37,6 +37,7 @@ import com.bosssoft.platform.es.jdbc.director.UpdateDirector;
 import com.bosssoft.platform.es.jdbc.driver.ESClient;
 import com.bosssoft.platform.es.jdbc.driver.ESConnection;
 import com.bosssoft.platform.es.jdbc.mate.InExpression;
+import com.bosssoft.platform.es.jdbc.model.DeleteSqlObj;
 import com.bosssoft.platform.es.jdbc.model.ESResultSet;
 import com.bosssoft.platform.es.jdbc.model.InsertSqlObj;
 import com.bosssoft.platform.es.jdbc.model.QueryBody;
@@ -147,6 +148,13 @@ public class ESStatement implements Statement{
 			esClient.IndexDoc(connection.getIndex(), sqlObj.getType(), sqlObj.getValueList());
 		}
 		else{//删除
+			DeleteSqlObj deleteSqlObj=updateDirector.buildDelete(sql, this);
+			
+			//调用esclient
+			ESClient esClient=connection.getEsClient();
+			for (String id : deleteSqlObj.getIds()) {
+				esClient.deleteDoc(connection.getIndex(), deleteSqlObj.getType(), id);
+			}
 			
 		}
 		return 0;

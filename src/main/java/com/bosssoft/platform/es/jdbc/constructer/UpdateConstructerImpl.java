@@ -29,10 +29,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bosssoft.platform.es.jdbc.model.DeleteSqlObj;
 import com.bosssoft.platform.es.jdbc.model.InsertSqlObj;
 import com.bosssoft.platform.es.jdbc.model.UpdateSqlObj;
 import com.facebook.presto.sql.parser.SqlParser;
 import com.facebook.presto.sql.tree.ComparisonExpression;
+import com.facebook.presto.sql.tree.Delete;
 import com.facebook.presto.sql.tree.Expression;
 import com.facebook.presto.sql.tree.Insert;
 import com.facebook.presto.sql.tree.QueryBody;
@@ -141,6 +143,33 @@ public class UpdateConstructerImpl implements UpdateConstructer{
 	
 		return insertSqlObj;
 	}
+
+
+	
+	@Override
+	public DeleteSqlObj builddeleteObj(String sql,Statement esStatement) throws SQLException {
+		DeleteSqlObj deleteSqlObj=new DeleteSqlObj();
+		
+		Delete deleteStatement = (Delete) new SqlParser().createStatement(sql);
+		String type=deleteStatement.getTable().getName().toString();
+		deleteSqlObj.setType(type);
+		
+		String helpeSql=null;
+		if(sql.contains("where")){
+			String where=sql.substring(sql.indexOf("where"),sql.length());
+			helpeSql="select _id from "+type+" "+where;
+		}else{
+			helpeSql="select _id from "+type;
+		}
+		
+		//根据where条件查询 获取符合条件的文档id
+		 ResultSet rs=esStatement.executeQuery(helpeSql);
+		while(rs.next()) deleteSqlObj.addid(rs.getString("_id"));
+		return deleteSqlObj;
+	}
+
+
+
 	
 }
 

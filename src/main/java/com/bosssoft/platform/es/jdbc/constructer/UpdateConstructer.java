@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.bosssoft.platform.es.jdbc.model.DeleteSqlObj;
 import com.bosssoft.platform.es.jdbc.model.InsertSqlObj;
 import com.bosssoft.platform.es.jdbc.model.UpdateSqlObj;
 
@@ -34,6 +35,8 @@ public interface UpdateConstructer {
 	public UpdateSqlObj buildUpdateObj(String sql,String index,Statement esStatement) throws SQLException;
 	
 	public InsertSqlObj buildInsertObj(com.facebook.presto.sql.tree.Statement statement)throws SQLException;
+	
+	public DeleteSqlObj builddeleteObj(String sql,Statement esStatement)throws SQLException;
     
 }
 
