@@ -17,13 +17,17 @@ package com.bosssoft.platform.es.jdbc.director;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bosssoft.platform.es.jdbc.constructer.UpdateConstructer;
 import com.bosssoft.platform.es.jdbc.driver.ESClient;
 import com.bosssoft.platform.es.jdbc.driver.ESConnection;
+import com.bosssoft.platform.es.jdbc.mate.BatchUpdateObj;
 import com.bosssoft.platform.es.jdbc.model.DeleteSqlObj;
 import com.bosssoft.platform.es.jdbc.model.InsertSqlObj;
 import com.bosssoft.platform.es.jdbc.model.UpdateSqlObj;
+import com.facebook.presto.sql.parser.SqlParser;
 
 /**
  * TODO es的更新体的构建指导类
@@ -35,8 +39,19 @@ public class UpdateDirector {
 
 	private UpdateConstructer builder;
 	
+	private List<String> updateList;
+	
+	private List<String> insertList;
+	
+	private List<String> deleteList;
+	
+
+	
 	public UpdateDirector(UpdateConstructer builder){
 		this.builder=builder;
+		updateList=new ArrayList<>();
+		insertList=new ArrayList<>();
+		deleteList=new ArrayList<>();
 	}
 	
    /**
@@ -76,7 +91,8 @@ public class UpdateDirector {
 	 * @return
 	 * @throws SQLException
 	 */
-	public InsertSqlObj buildInsert(com.facebook.presto.sql.tree.Statement statement,String index) throws SQLException{
+	public InsertSqlObj buildInsert(String sql) throws SQLException{
+		com.facebook.presto.sql.tree.Statement statement = new SqlParser().createStatement(sql);
 		return builder.buildInsertObj(statement);
 		
 	}
@@ -92,6 +108,37 @@ public class UpdateDirector {
 		
 		return builder.builddeleteObj(sql, esStatement);
 		 
+	}
+	
+	public BatchUpdateObj buildBatch(Statement esStatement,String index) throws SQLException{
+		BatchUpdateObj batchObj=new BatchUpdateObj();
+		//更新
+		for (String sql : updateList) {
+			batchObj.addUpObj(buildUpdate(sql, index, esStatement));
+		}
+		
+		//插入
+		for (String sql : insertList) {
+			batchObj.addInObj(buildInsert(sql));
+		}
+		
+		//删除
+		for (String sql : deleteList) {
+			batchObj.addDeObj(buildDelete(sql, esStatement));
+		}
+		return batchObj;
+	}
+	
+	public void addupdate(String sql){
+		updateList.add(sql);
+	}
+	
+	public void addinsert(String sql){
+		insertList.add(sql);
+	}
+	
+	public void adddelete(String sql){
+		deleteList.add(sql);
 	}
 }
 

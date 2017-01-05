@@ -59,7 +59,7 @@ public class MakeTest {
 			 
 			 Statement st = con.createStatement(); 	
 			 
-			 ResultSet rs = st.executeQuery("SELECT _id, user_salary FROM user where user_salary between 3000 and 4200 order by user_no");
+			 ResultSet rs = st.executeQuery("SELECT user_salary,user_name FROM user  order by user_no");
 			 ResultSetMetaData metaData=rs.getMetaData();
 			 int ncols=metaData.getColumnCount();
 		      while(rs.next()){
@@ -84,7 +84,7 @@ public class MakeTest {
 		      	Statement st = con.createStatement();
 		      	ResultSet rs = st.executeQuery("SELECT  distinct dept_no from user");
 		      	while(rs.next()){
-		       		System.out.println("dept_no:"+rs.getString("dept_no"));
+		       		System.out.println("dept_no:"+rs.getString("dept"));
 		       	 }
 		       	 rs.close();
 		       	 con.close();

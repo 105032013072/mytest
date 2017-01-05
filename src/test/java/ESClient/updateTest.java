@@ -25,6 +25,8 @@ import org.junit.Test;
 
 import com.bosssoft.platform.es.jdbc.enumeration.AggType;
 
+import Test.pojo.User;
+
 /**
  * TODO 开发测试类
  *
@@ -95,14 +97,90 @@ public class updateTest {
 						 getConnection("jdbc:es://localhost:9300/"+index);
 				 
 				 Statement st = con.createStatement(); 	
+				// String sql="delete from user where dept_no='ddd'";
 				 String sql="delete from user";
-				 //String sql="delete from user";
 				 st.executeUpdate(sql); 
 			       con.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 		 }
+	 
+	//批量插入数据
+		@Test
+		public void testInsertBatch(){
+			try {
+			
+				Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
+				Statement st = con.createStatement();
+				for(int i=0;i<3;i++){
+					User user=new User("u0"+i, "jason"+i+"号", "d"+0, 3200+i, 20+i);
+					String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
+					+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
+					st.addBatch(sql);
+				}
+				for(int i=0;i<3;i++){
+					User user=new User("u1"+i, "tom"+i+"号", "d"+1, 2200+i, 20+i);
+					String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
+					+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
+					st.addBatch(sql);
+				}
+				for(int i=0;i<3;i++){
+					User user=new User("u2"+i, "mical"+i+"号", "d"+2, 4200+i, 20+i);
+					String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
+					+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
+					st.addBatch(sql);
+				}
+				st.executeBatch();
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//批量修改数据
+				@Test
+				public void testUpdateBatch(){
+					try {
+					
+						Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
+						Statement st = con.createStatement();
+						String sql1="update user set user_name='NewTome' where user_salary>=2200 and user_salary<=2202";
+						String sql2="update user set dept_no='dn' where dept_no='d2'";
+						//String sql3="insert into user(user_no,user_name,dept_no) values ('uu','aaa','ddd') ";
+						st.addBatch(sql1);
+						st.addBatch(sql2);
+						//st.addBatch(sql3);
+						st.executeBatch();
+						
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				
+				//批量删除数据
+				@Test
+				public void testDeleteBatch(){
+					try {
+					
+						Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
+						Statement st = con.createStatement();
+						//String sql1="delete from user where user_salary>=2200 and user_salary<=2202";
+						//String sql2="delete from  user  where dept_no='dn'";
+						String sql3="insert into user(user_no,user_name,dept_no) values ('uu','aaa','ddd') ";
+						//st.addBatch(sql1);
+						//st.addBatch(sql2);
+						st.addBatch(sql3);
+						st.executeBatch();
+						
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 
 }
 

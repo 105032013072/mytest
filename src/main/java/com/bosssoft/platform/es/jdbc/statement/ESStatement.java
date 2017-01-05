@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
+import java.util.List;
 
 import org.elasticsearch.action.search.SearchResponse;
 
@@ -36,6 +37,7 @@ import com.bosssoft.platform.es.jdbc.director.SelectObjDirector;
 import com.bosssoft.platform.es.jdbc.director.UpdateDirector;
 import com.bosssoft.platform.es.jdbc.driver.ESClient;
 import com.bosssoft.platform.es.jdbc.driver.ESConnection;
+import com.bosssoft.platform.es.jdbc.mate.BatchUpdateObj;
 import com.bosssoft.platform.es.jdbc.mate.InExpression;
 import com.bosssoft.platform.es.jdbc.model.DeleteSqlObj;
 import com.bosssoft.platform.es.jdbc.model.ESResultSet;
@@ -140,8 +142,8 @@ public class ESStatement implements Statement{
 			}
 		}
 		else if(sql.startsWith("insert")){
-			com.facebook.presto.sql.tree.Statement statement = sqlparser.createStatement(sql);
-			InsertSqlObj sqlObj=updateDirector.buildInsert(statement,connection.getIndex());
+			
+			InsertSqlObj sqlObj=updateDirector.buildInsert(sql);
 			
 			//调用esclient
 			ESClient esClient=connection.getEsClient();
@@ -158,6 +160,40 @@ public class ESStatement implements Statement{
 			
 		}
 		return 0;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.sql.Statement#executeBatch()
+	 */
+	@Override
+	public int[] executeBatch() throws SQLException {
+		BatchUpdateObj batchObj=updateDirector.buildBatch(this, connection.getIndex());
+		ESClient esClient=connection.getEsClient();
+		
+		
+		List<UpdateSqlObj> upobjList=batchObj.getUpobjList();
+		 List<DeleteSqlObj> deobjList=batchObj.getDeobjList();
+		 List<InsertSqlObj> inobjList=batchObj.getInobjList();
+		 
+		 if(upobjList.size()!=0)  esClient.updateBatch(connection.getIndex(), upobjList);
+		 if(deobjList.size()!=0)  esClient.deletBatch(connection.getIndex(), deobjList);
+		 if(inobjList.size()!=0)  esClient.indexBatch(connection.getIndex(), inobjList);
+		 
+		
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.sql.Statement#addBatch(java.lang.String)
+	 */
+	@Override
+	public void addBatch(String sql) throws SQLException {
+		sql=sql.toLowerCase().trim();
+		if(sql.startsWith("insert")) updateDirector.addinsert(sql);
+		else if(sql.startsWith("update")) updateDirector.addupdate(sql);
+		else if(sql.startsWith("delete")) updateDirector.adddelete(sql);
+		else throw new SQLException("illegal sql");
+		
 	}
 
 	//sql语句的分页解析
@@ -197,20 +233,6 @@ public class ESStatement implements Statement{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
-
-	/* (non-Javadoc)
-	 * @see java.sql.Statement#addBatch(java.lang.String)
-	 */
-	@Override
-	public void addBatch(String sql) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 
 
 	/* (non-Javadoc)
@@ -324,14 +346,7 @@ public class ESStatement implements Statement{
 
 
 
-	/* (non-Javadoc)
-	 * @see java.sql.Statement#executeBatch()
-	 */
-	@Override
-	public int[] executeBatch() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 
 

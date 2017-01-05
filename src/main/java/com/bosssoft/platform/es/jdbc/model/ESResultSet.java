@@ -466,11 +466,12 @@ public class ESResultSet implements ResultSet{
 	@Override
 	public double getDouble(String columnLabel) throws SQLException {
 		Map<String,Object> map=resultList.get(index);
-		if(map.get(columnLabel)==null )throw new SQLException("column "+columnLabel+" is not found");
+		if(map.get(columnLabel)!=null ){
 		
 		String value=String.valueOf(map.get(columnLabel));
 		double d=Double.parseDouble(value);
 		return d;
+		}else return 0;
 	}
 
 	/* (non-Javadoc)
@@ -507,11 +508,12 @@ public class ESResultSet implements ResultSet{
 	@Override
 	public float getFloat(String columnLabel) throws SQLException {
 		Map<String,Object> map=resultList.get(index);
-		if(map.get(columnLabel)==null )throw new SQLException("column "+columnLabel+" is not found");
+		if(map.get(columnLabel)!=null ){
 		
 		String value=String.valueOf(map.get(columnLabel));
 		float f=Float.parseFloat(value);
 		return f;
+		}else return 0;
 		
 	}
 
@@ -539,11 +541,13 @@ public class ESResultSet implements ResultSet{
 	@Override
 	public int getInt(String columnLabel) throws SQLException {
 		Map<String,Object> map=resultList.get(index);
-		if(map.get(columnLabel)==null )throw new SQLException("column "+columnLabel+" is not found");
+		if(map.get(columnLabel)!=null ){
+			String value=String.valueOf(map.get(columnLabel));
+			int i=Integer.parseInt(value);
+			return i;
+		}else return 0;
 		
-		String value=String.valueOf(map.get(columnLabel));
-		int i=Integer.parseInt(value);
-		return i;
+		
 	}
 
 	/* (non-Javadoc)
@@ -561,11 +565,13 @@ public class ESResultSet implements ResultSet{
 	@Override
 	public long getLong(String columnLabel) throws SQLException {
 		Map<String,Object> map=resultList.get(index);
-		if(map.get(columnLabel)==null )throw new SQLException("column "+columnLabel+" is not found");
+		if(map.get(columnLabel)==null ){
+			String value=String.valueOf(map.get(columnLabel));
+			Long l=Long.parseLong(value);
+			return l;
+		}else return 0;
 		
-		String value=String.valueOf(map.get(columnLabel));
-		Long l=Long.parseLong(value);
-		return l;
+		
 	}
 
 	/* (non-Javadoc)
@@ -652,7 +658,7 @@ public class ESResultSet implements ResultSet{
 	public Object getObject(String columnLabel) throws SQLException {
 		// TODO Auto-generated method stub
 		Map<String,Object> map=resultList.get(index);
-		if(map.get(columnLabel)==null )throw new SQLException("column "+columnLabel+" is not found");
+		//if(map.get(columnLabel)==null )throw new SQLException("column "+columnLabel+" is not found");
 		
 		return map.get(columnLabel);
 	}
@@ -805,10 +811,12 @@ public class ESResultSet implements ResultSet{
 	@Override
 	public String getString(String columnLabel) throws SQLException {
 		Map<String,Object> map=resultList.get(index);
-		if(map.get(columnLabel)==null )throw new SQLException("column "+columnLabel+" is not found");
+		if(map.get(columnLabel)!=null ){
+			String value=String.valueOf(map.get(columnLabel));
+			return value;
+		}else return null;
 		
-		String value=String.valueOf(map.get(columnLabel));
-		return value;
+		
 	}
 
 	/* (non-Javadoc)
