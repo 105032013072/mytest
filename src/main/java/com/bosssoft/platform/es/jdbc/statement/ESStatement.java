@@ -47,6 +47,7 @@ import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 import com.bosssoft.platform.es.jdbc.model.UpdateSqlObj;
 import com.facebook.presto.sql.parser.SqlParser;
 import com.facebook.presto.sql.tree.CreateTable;
+import com.facebook.presto.sql.tree.RenameTable;
 
 /**
  * TODO 此处填写 class 信息
@@ -148,8 +149,7 @@ public class ESStatement implements Statement{
 			//调用esclient
 			ESClient esClient=connection.getEsClient();
 			esClient.IndexDoc(connection.getIndex(), sqlObj.getType(), sqlObj.getValueList());
-		}
-		else{//删除
+		}else if(sql.startsWith("delete")){//删除
 			DeleteSqlObj deleteSqlObj=updateDirector.buildDelete(sql, this);
 			
 			//调用esclient
@@ -158,7 +158,19 @@ public class ESStatement implements Statement{
 				esClient.deleteDoc(connection.getIndex(), deleteSqlObj.getType(), id);
 			}
 			
-		}
+		}else if(sql.startsWith("alter")){//修改表结构
+			String helpersql=sql+" RENAME TO name";//构建新sql以获取表名
+			RenameTable statement =  (RenameTable) sqlparser.createStatement(helpersql);
+			String tableName=statement.getSource().toString();
+			
+			//构建mapping
+		    String mapping=updateDirector.buildCreate(tableName, connection.getIndex());
+		    ESClient esClient=connection.getEsClient();
+			esClient.addMapping(connection.getIndex(), tableName, mapping);
+			
+		}else if(sql.startsWith("drop")){//删除索引
+			
+		}else throw new SQLException("illegal sql");
 		return 0;
 	}
 	

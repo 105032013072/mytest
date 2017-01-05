@@ -303,6 +303,16 @@ public class ESClient {
 		}
     }
     
+    /**
+     * 为type设置Mapping
+     * @param index
+     * @param type
+     * @param mapping
+     */
+    public void addMapping(String index,String type,String mapping){
+    	client.admin().indices().preparePutMapping(index).setType(type).setSource(mapping).get();
+    }
+    
     public XContentBuilder getXContentBuilder(List<ColumnValue> list) throws IOException{
     	XContentBuilder builder = jsonBuilder().startObject();
     	for (ColumnValue columnValue : list) {

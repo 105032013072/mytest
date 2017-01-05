@@ -1,0 +1,27 @@
+{
+    "user": {
+        "properties": {
+            "dept_no": {
+                "type": "string"
+            },
+            "user_age": {
+                "type": "long"
+            },
+            "user_name": {
+                "type": "string",
+                "boost": 8,
+                "store": true,
+                "analyzer": "ik_max_word"
+            },
+            "user_no": {
+                "type": "string"
+            },
+            "user_salary": {
+                "type": "long"
+            },
+            "user_address":{
+               "type":"string"
+            }
+        }
+    }
+}

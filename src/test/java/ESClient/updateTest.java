@@ -66,6 +66,22 @@ public class updateTest {
 			}
 	 }
 	 
+	 //更新
+	 @Test
+	 public void test4(){
+		 try {
+			 //集群名为：escluster
+			 Connection con = DriverManager.
+					 getConnection("jdbc:es://localhost:9300/"+index);
+			 
+			 Statement st = con.createStatement(); 	
+			 st.executeUpdate("alter table user"); 
+		       con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	 }
+	 
 	 
 
 	 
