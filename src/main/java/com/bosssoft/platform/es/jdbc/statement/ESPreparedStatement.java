@@ -35,9 +35,11 @@ import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.bosssoft.platform.es.jdbc.driver.ESConnection;
+import com.fasterxml.jackson.databind.deser.std.DateDeserializers.DateDeserializer;
 
 /**
  * TODO 此处填写 class 信息
@@ -51,7 +53,8 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 	
 	private int[] index;//记录每个？在sql数组的下标
 	
-
+	
+	
 	public ESPreparedStatement(ESConnection connection, String sql) throws SQLException{
 		super(connection);
 		sql = sql.toLowerCase().trim()+";";
@@ -108,6 +111,24 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 	public void addBatch() throws SQLException {
 		String sql=buildSql();
 		super.addBatch(sql);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.sql.PreparedStatement#setDate(int, java.sql.Date)
+	 */
+	@Override
+	public void setDate(int parameterIndex, Date x) throws SQLException {
+		/*String date=dateFormat.format(x);
+		setString(parameterIndex, date);*/
+		
+		/*java.util.Date d=new java.util.Date (x.getTime());
+		DateDeserializer deserializer
+		int i=index[parameterIndex];
+		sqlpart[i]=d;*/
+		
+		int i=index[parameterIndex];
+		sqlpart[i]="'"+x+"'";
+		
 	}
 	
 	/* (non-Javadoc)
@@ -739,14 +760,7 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see java.sql.PreparedStatement#setDate(int, java.sql.Date)
-	 */
-	@Override
-	public void setDate(int parameterIndex, Date x) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see java.sql.PreparedStatement#setDate(int, java.sql.Date, java.util.Calendar)
@@ -960,8 +974,8 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 	 */
 	@Override
 	public void setTime(int parameterIndex, Time x) throws SQLException {
-		// TODO Auto-generated method stub
-		
+		int i=index[parameterIndex];
+		sqlpart[i]="'"+x+"'";
 	}
 
 	/* (non-Javadoc)
@@ -980,7 +994,8 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 	@Override
 	public void setTimestamp(int parameterIndex, Timestamp x)
 			throws SQLException {
-		// TODO Auto-generated method stub
+		int i=index[parameterIndex];
+		sqlpart[i]="'"+x+"'";
 		
 	}
 

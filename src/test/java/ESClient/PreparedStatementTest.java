@@ -20,6 +20,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -85,14 +87,12 @@ public class PreparedStatementTest {
 			 //集群名为：escluster
 			 Connection con = DriverManager.
 					 getConnection("jdbc:es://localhost:9300/"+index);
-			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values(?,?,?,?,?)";
+			 String sql="insert into user(user_no,user_birth) values(?,?)";
 			 PreparedStatement ps = con.prepareStatement(sql);
-			 ps.setString(1, "uaaaa");
-			 ps.setString(2, "chins");
-			 ps.setString(3, "d3");
-			 ps.setFloat(4, 6000);
-			 ps.setInt(5, 39);
-			ps.executeUpdate();
+			 ps.setString(1, "uuuuu02");
+			 ps.setTimestamp(2, new Timestamp(new Date().getTime()));
+			 //ps.setDate(2, new java.sql.Date(new Date().getTime()));
+			 ps.executeUpdate();
 		       con.close();
 			} catch (Exception e) {
 				e.printStackTrace();

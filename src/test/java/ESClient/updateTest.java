@@ -95,7 +95,7 @@ public class updateTest {
 					 getConnection("jdbc:es://localhost:9300/"+index);
 			 
 			 Statement st = con.createStatement(); 	
-			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values("
+			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age,user_birth) values("
 						+"\'"+"n01"+"\'"+","+"\'"+"newname"+"\'"+","+"\'"+"d3"+"\'"+","+5000+","+38+")";
 			 st.executeUpdate(sql); 
 		       con.close();
@@ -197,6 +197,23 @@ public class updateTest {
 						e.printStackTrace();
 					}
 				}
+				
+				
+				 //修改表
+				 @Test
+				 public void test7(){
+					 try {
+						 //集群名为：escluster
+						 Connection con = DriverManager.
+								 getConnection("jdbc:es://localhost:9300/"+index);
+						 
+						 Statement st = con.createStatement(); 	
+						 st.executeUpdate("alter table user"); 
+					       con.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+				 }
 
 }
 

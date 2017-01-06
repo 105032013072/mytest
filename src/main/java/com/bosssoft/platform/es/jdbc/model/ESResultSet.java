@@ -419,8 +419,8 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Date getDate(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		String filed=findColumn(columnIndex);
+		return getDate(filed);
 	}
 
 	/* (non-Javadoc)
@@ -428,8 +428,14 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Date getDate(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Map<String,Object> map=resultList.get(index);
+		if(map.get(columnLabel)!=null ){
+		
+		String value=String.valueOf(map.get(columnLabel));
+		Date date=java.sql.Date.valueOf(value);
+		return date;
+		}else return null;
 	}
 
 	/* (non-Javadoc)
@@ -437,7 +443,6 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Date getDate(int columnIndex, Calendar cal) throws SQLException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -824,8 +829,8 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Time getTime(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return getTime(findColumn(columnIndex));
 	}
 
 	/* (non-Javadoc)
@@ -833,8 +838,13 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Time getTime(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String,Object> map=resultList.get(index);
+		if(map.get(columnLabel)!=null ){
+		
+		String value=String.valueOf(map.get(columnLabel));
+		Time time=java.sql.Time.valueOf(value);
+		return time;
+		}else return null;
 	}
 
 	/* (non-Javadoc)
@@ -860,8 +870,8 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Timestamp getTimestamp(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return getTimestamp(findColumn(columnIndex));
 	}
 
 	/* (non-Javadoc)
@@ -869,8 +879,14 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Timestamp getTimestamp(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Map<String,Object> map=resultList.get(index);
+		if(map.get(columnLabel)!=null ){
+		
+		String value=String.valueOf(map.get(columnLabel));
+		Timestamp timestamp=java.sql.Timestamp.valueOf(value);
+		return timestamp;
+		}else return null;
 	}
 
 	/* (non-Javadoc)

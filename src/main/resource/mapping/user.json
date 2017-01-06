@@ -19,8 +19,8 @@
             "user_salary": {
                 "type": "long"
             },
-            "user_address":{
-               "type":"string"
+            "user_birth":{
+               "type":"date"
             }
         }
     }

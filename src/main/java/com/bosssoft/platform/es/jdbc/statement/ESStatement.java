@@ -48,6 +48,7 @@ import com.bosssoft.platform.es.jdbc.model.UpdateSqlObj;
 import com.facebook.presto.sql.parser.SqlParser;
 import com.facebook.presto.sql.tree.CreateTable;
 import com.facebook.presto.sql.tree.RenameTable;
+import com.fasterxml.jackson.databind.deser.std.DateDeserializers.DateDeserializer;
 
 /**
  * TODO 此处填写 class 信息
