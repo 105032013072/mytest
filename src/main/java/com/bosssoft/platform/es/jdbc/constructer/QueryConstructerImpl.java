@@ -169,10 +169,11 @@ public class QueryConstructerImpl implements QueryConstructer{
 	
 	private QueryBuilder resolveInequality(Inequality inequality) throws SQLException{
 		String op=inequality.getOperation();
+		 String filed=inequality.getFiled();
+		 Object value=judger.judgeNumType((Expression) inequality.getValue());
 		QueryBuilder qb=null;
 		if("EQUAL".equals(op)){
-		    String filed=inequality.getFiled();
-		    Object value=inequality.getValue();
+		   
 			if("".equals(value)) {//作为 is null 处理
 				qb=QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery(filed));
 			}else{
@@ -180,23 +181,21 @@ public class QueryConstructerImpl implements QueryConstructer{
 			}
 			
 		}else if("NOT_EQUAL".equals(op)){//!=
-			String filed=inequality.getFiled();
-		    Object value=inequality.getValue();
-		    
+	
 			if("".equals(value)){//作为not null 来处理
 				qb=QueryBuilders.existsQuery(filed);
 			}else{
 				qb=QueryBuilders.boolQuery().mustNot(QueryBuilders.termQuery(filed, value));
 			}
 		}else if("LESS_THAN".equals(op)){//<
-			qb = QueryBuilders.rangeQuery(inequality.getFiled()).lt(inequality.getValue());
+			qb = QueryBuilders.rangeQuery(filed).lt(value);
 			
 		}else if("GREATER_THAN".equals(op)){//>
-			qb = QueryBuilders.rangeQuery(inequality.getFiled()).gt(inequality.getValue());
+			qb = QueryBuilders.rangeQuery(filed).gt(value);
 		}else if("LESS_THAN_OR_EQUAL".equals(op)){//<=
-			qb = QueryBuilders.rangeQuery(inequality.getFiled()).to(inequality.getValue());
+			qb = QueryBuilders.rangeQuery(filed).to(value);
 		}else if("GREATER_THAN_OR_EQUAL".equals(op)){//>=
-			qb = QueryBuilders.rangeQuery(inequality.getFiled()).from(inequality.getValue());
+			qb = QueryBuilders.rangeQuery(filed).from(value);
 		}else throw new SQLException("illegal opreration");
 		return qb;
 	}

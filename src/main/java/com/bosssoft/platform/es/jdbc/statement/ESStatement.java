@@ -168,8 +168,6 @@ public class ESStatement implements Statement{
 		    ESClient esClient=connection.getEsClient();
 			esClient.addMapping(connection.getIndex(), tableName, mapping);
 			
-		}else if(sql.startsWith("drop")){//删除索引
-			
 		}else throw new SQLException("illegal sql");
 		return 0;
 	}

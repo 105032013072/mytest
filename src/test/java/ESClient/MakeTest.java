@@ -59,7 +59,7 @@ public class MakeTest {
 			 
 			 Statement st = con.createStatement(); 	
 			 
-			 ResultSet rs = st.executeQuery("SELECT user_salary,user_name FROM user  order by user_no");
+			 ResultSet rs = st.executeQuery("select * from user where dept_no='d0' and user_salary=3202");
 			 ResultSetMetaData metaData=rs.getMetaData();
 			 int ncols=metaData.getColumnCount();
 		      while(rs.next()){
@@ -121,7 +121,7 @@ public class MakeTest {
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
-		      	ResultSet rs = st.executeQuery("SELECT * from user where dept_no in ('d0','d1') order by user_no");
+		      	ResultSet rs = st.executeQuery("SELECT * from user where user_salary in (3202.0,4202.0) order by user_no");
 		      	ResultSetMetaData metaData=rs.getMetaData();
 				 int ncols=metaData.getColumnCount();
 			      while(rs.next()){

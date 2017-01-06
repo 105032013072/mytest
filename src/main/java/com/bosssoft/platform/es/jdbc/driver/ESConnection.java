@@ -36,6 +36,7 @@ import java.util.concurrent.Executor;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 
+import com.bosssoft.platform.es.jdbc.statement.ESPreparedStatement;
 import com.bosssoft.platform.es.jdbc.statement.ESStatement;
 
 /**
@@ -65,6 +66,13 @@ public class ESConnection implements Connection{
 		return new ESStatement(this);
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.sql.Connection#prepareStatement(java.lang.String)
+	 */
+	@Override
+	public PreparedStatement prepareStatement(String sql) throws SQLException {
+		return new ESPreparedStatement(this, sql);
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.sql.Wrapper#isWrapperFor(java.lang.Class)
@@ -364,14 +372,7 @@ public class ESConnection implements Connection{
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.sql.Connection#prepareStatement(java.lang.String)
-	 */
-	@Override
-	public PreparedStatement prepareStatement(String sql) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see java.sql.Connection#prepareStatement(java.lang.String, int)

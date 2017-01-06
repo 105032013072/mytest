@@ -107,7 +107,7 @@ public class UpdateConstructerImpl implements UpdateConstructer{
 		String[] updates = matcher.group(3).replaceAll(",\\s*([\"|\\w|\\.]+\\s*=)", "<-SPLIT->$1").split("<-SPLIT->");
 		for(String u : updates){
 			ComparisonExpression comparison = (ComparisonExpression) new SqlParser().createExpression(u);
-			updateSqlObj.addUpdateList(comparison.getLeft().toString().replaceAll("\"", ""), judger.judgeValueType(comparison.getRight()));
+			updateSqlObj.addUpdateList(comparison.getLeft().toString().replaceAll("\"", ""), judger.judgeNumType(comparison.getRight()));
 		}
 		
 	   //根据where条件查询 获取符合条件的文档id
@@ -137,7 +137,7 @@ public class UpdateConstructerImpl implements UpdateConstructer{
 		
 		for (int i = 0; i < columns.size(); i++) {
 			String key=columns.get(i);
-			Object obj=judger.judgeValueType(list.get(i));
+			Object obj=judger.judgeNumType(list.get(i));
 			insertSqlObj.addValue(key, obj);
 		}
 	

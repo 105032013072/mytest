@@ -52,18 +52,14 @@ public class Judger {
 			DoubleLiteral literal=(DoubleLiteral) e;
 			result=literal.getValue();
 			
-		 }else {
+		 }else if(e instanceof LongLiteral){
 			
 			 LongLiteral literal=(LongLiteral) e;
 			result=literal.getValue();
+		 }else{
+			 BooleanLiteral literal=(BooleanLiteral) e;
+			 result=literal.getValue();
 		 }
 		return result;
-	}
-	
-	public Object judgeValueType(Expression expression){
-		if(expression instanceof LongLiteral) return ((LongLiteral)expression).getValue();
-		else if(expression instanceof BooleanLiteral) return ((BooleanLiteral)expression).getValue();
-		else if(expression instanceof DoubleLiteral) return ((DoubleLiteral)expression).getValue();
-		else  return ((StringLiteral)expression).getValue();
 	}
 }
