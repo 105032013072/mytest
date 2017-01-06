@@ -79,11 +79,8 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 	@Override
 	public ResultSet executeQuery() throws SQLException {
 		//构建sql
-		StringBuilder sb = new StringBuilder();
-		for(int i=0;i<sqlpart.length-1;i++){
-			sb.append(sqlpart[i]);
-		}
-		return super.executeQuery(sb.toString());
+		String sql=buildSql();
+		return super.executeQuery(sql);
 	}
 
 	/* (non-Javadoc)
@@ -92,13 +89,27 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 	@Override
 	public int executeUpdate() throws SQLException {
 		//构建sql
+	    String sql=buildSql();
+		return super.executeUpdate(sql);
+	}
+	
+	private String buildSql(){
 		StringBuilder sb = new StringBuilder();
 	    for(int i=0;i<=sqlpart.length-1;i++){
 			sb.append(sqlpart[i]);
 		}
 	    String sql=sb.toString().substring(0, sb.length()-1);
-		return super.executeUpdate(sql);
+	    return sql;
 	}
+	/* (non-Javadoc)
+	 * @see java.sql.PreparedStatement#addBatch()
+	 */
+	@Override
+	public void addBatch() throws SQLException {
+		String sql=buildSql();
+		super.addBatch(sql);
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.sql.Statement#addBatch(java.lang.String)
 	 */
@@ -108,6 +119,8 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 		
 	}
 
+
+	
 	/* (non-Javadoc)
 	 * @see java.sql.Statement#cancel()
 	 */
@@ -194,17 +207,17 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 	 */
 	@Override
 	public int[] executeBatch() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return super.executeBatch();
 	}
 
 	/* (non-Javadoc)
 	 * @see java.sql.Statement#executeQuery(java.lang.String)
 	 */
 	@Override
-	public ResultSet executeQuery(String arg0) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public ResultSet executeQuery(String sql) throws SQLException {
+		
+		return super.executeQuery(sql);
 	}
 
 	/* (non-Javadoc)
@@ -212,8 +225,8 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 	 */
 	@Override
 	public int executeUpdate(String arg0) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return super.executeUpdate(arg0);
 	}
 
 	/* (non-Javadoc)
@@ -491,14 +504,7 @@ public class ESPreparedStatement extends ESStatement implements PreparedStatemen
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.sql.PreparedStatement#addBatch()
-	 */
-	@Override
-	public void addBatch() throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see java.sql.PreparedStatement#clearParameters()

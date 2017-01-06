@@ -48,6 +48,34 @@ public class MakeTest {
 			
 		}
 	 
+			 //
+			 @Test
+			 public void jsuttest(){
+				 try {
+					 //集群名为：escluster
+					 Connection con = DriverManager.
+							 getConnection("jdbc:es://localhost:9300/"+index);
+				      	//ResultSet rs = st.executeQuery("SELECT * FROM uab_agen_item where tfname ='测试3' limit 2,3");
+					 
+					 Statement st = con.createStatement(); 	
+					 
+					 ResultSet rs = st.executeQuery("select _id from user where user_no='uaaaa'");
+					 ResultSetMetaData metaData=rs.getMetaData();
+					 int ncols=metaData.getColumnCount();
+				      while(rs.next()){
+				    	  for (int i=1;i<=ncols;i++) {
+				    		  System.out.print(metaData.getColumnName(i)+": "+rs.getObject(i)+"   ");
+						}
+				    	  System.out.println();//换行
+				      }
+				       rs.close();
+				       con.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+			 }
+			 
+			 
 	 //简单查询(测试获取结果)
 	 @Test
 	 public void test0(){

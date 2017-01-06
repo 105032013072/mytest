@@ -99,130 +99,117 @@ public class PreparedStatementTest {
 			}
 	 }
 	 
-	 
-
-	 
-	 
-	 @Test
-	 //insert
-	 public void test2(){
-		 try {
-			 //集群名为：escluster
-			 Connection con = DriverManager.
-					 getConnection("jdbc:es://localhost:9300/"+index);
-			 
-			 Statement st = con.createStatement(); 	
-			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values("
-						+"\'"+"n01"+"\'"+","+"\'"+"newname"+"\'"+","+"\'"+"d3"+"\'"+","+5000+","+38+")";
-			 st.executeUpdate(sql); 
-		       con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-	 }
-	 
-	//delete
-	 @Test
-		 public void test3(){
-		 try {
-			 //集群名为：escluster
-			 Connection con = DriverManager.
-					 getConnection("jdbc:es://localhost:9300/"+index);
-		      	//ResultSet rs = st.executeQuery("SELECT * FROM uab_agen_item where tfname ='测试3' limit 2,3");
-			 
-			 Statement st = con.createStatement(); 	
-			 
-			 ResultSet rs = st.executeQuery("select * from user where dept_no='d0' and user_salary=3202.0");
-			 ResultSetMetaData metaData=rs.getMetaData();
-			 int ncols=metaData.getColumnCount();
-		      while(rs.next()){
-		    	  for (int i=1;i<=ncols;i++) {
-		    		  System.out.print(metaData.getColumnName(i)+": "+rs.getObject(i)+"   ");
+	//更新
+		 @Test
+		 public void test5(){
+			 try {
+				 //集群名为：escluster
+				 Connection con = DriverManager.
+						 getConnection("jdbc:es://localhost:9300/"+index);
+				 String sql="UPDATE user SET user_name=? where user_no=?";
+				 PreparedStatement ps = con.prepareStatement(sql);
+				 ps.setString(1, "newName");
+				 ps.setString(2, "uaaaa");
+				ps.executeUpdate();
+			       con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-		    	  System.out.println();//换行
-		      }
-		       rs.close();
-		       con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		 }
 	 
-	//批量插入数据
-		@Test
-		public void testInsertBatch(){
-			try {
-			
-				Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
-				Statement st = con.createStatement();
-				for(int i=0;i<3;i++){
-					User user=new User("u0"+i, "jason"+i+"号", "d"+0, 3200+i, 20+i);
-					String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
-					+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
-					st.addBatch(sql);
+	 
+		//删除
+		 @Test
+		 public void test6(){
+			 try {
+				 //集群名为：escluster
+				 Connection con = DriverManager.
+						 getConnection("jdbc:es://localhost:9300/"+index);
+				 String sql="delete from  user  where user_no=?";
+				 PreparedStatement ps = con.prepareStatement(sql);
+				 ps.setString(1, "uaaaa");
+				ps.executeUpdate();
+			       con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				for(int i=0;i<3;i++){
-					User user=new User("u1"+i, "tom"+i+"号", "d"+1, 2200+i, 20+i);
-					String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
-					+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
-					st.addBatch(sql);
-				}
-				for(int i=0;i<3;i++){
-					User user=new User("u2"+i, "mical"+i+"号", "d"+2, 4200+i, 20+i);
-					String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
-					+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
-					st.addBatch(sql);
-				}
-				st.executeBatch();
+		 }
+
+		 //批量更新
+		 @Test
+		 public  void test7(){
+			 try {
+				 //集群名为：escluster
+				 Connection con = DriverManager.
+						 getConnection("jdbc:es://localhost:9300/"+index);
+				 String sql="UPDATE user SET user_name=? where user_no=?";
+				 PreparedStatement ps = con.prepareStatement(sql);
+				 ps.setString(1, "qqq");
+				 ps.setString(2, "un01");
+				 ps.addBatch();
 				
+				ps.setString(1, "qqq");
+				 ps.setString(2, "un02");
+				ps.addBatch();
 				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		//批量修改数据
-				@Test
-				public void testUpdateBatch(){
-					try {
-					
-						Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
-						Statement st = con.createStatement();
-						String sql1="update user set user_name='NewTome' where user_salary>=2200 and user_salary<=2202";
-						String sql2="update user set dept_no='dn' where dept_no='d2'";
-						//String sql3="insert into user(user_no,user_name,dept_no) values ('uu','aaa','ddd') ";
-						st.addBatch(sql1);
-						st.addBatch(sql2);
-						//st.addBatch(sql3);
-						st.executeBatch();
-						
-						
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+				ps.executeBatch();
+			       con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+		 }
+		 
+		 @Test
+		 public  void test8(){
+			 try {
+				 //集群名为：escluster
+				 Connection con = DriverManager.
+						 getConnection("jdbc:es://localhost:9300/"+index);
+				 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values(?,?,?,?,?)";
+				 PreparedStatement ps = con.prepareStatement(sql);
+				 ps.setString(1, "un01");
+				 ps.setString(2, "aaaa");
+				 ps.setString(3, "d3");
+				 ps.setFloat(4, 6000);
+				 ps.setInt(5, 39);
+				ps.addBatch();
 				
+				ps.setString(1, "un02");
+				 ps.setString(2, "bbbb");
+				 ps.setString(3, "d3");
+				 ps.setFloat(4, 6000);
+				 ps.setInt(5, 39);
+				ps.addBatch();
 				
-				//批量删除数据
-				@Test
-				public void testDeleteBatch(){
-					try {
-					
-						Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
-						Statement st = con.createStatement();
-						//String sql1="delete from user where user_salary>=2200 and user_salary<=2202";
-						//String sql2="delete from  user  where dept_no='dn'";
-						String sql3="insert into user(user_no,user_name,dept_no) values ('uu','aaa','ddd') ";
-						//st.addBatch(sql1);
-						//st.addBatch(sql2);
-						st.addBatch(sql3);
-						st.executeBatch();
-						
-						
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+				ps.executeBatch();
+			       con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+		 }
+		 
+		 //批量删除
+		 @Test
+		 public  void test9(){
+			 try {
+				 //集群名为：escluster
+				 Connection con = DriverManager.
+						 getConnection("jdbc:es://localhost:9300/"+index);
+				 String sql="delete from  user  where user_no=?";
+				 PreparedStatement ps = con.prepareStatement(sql);
+				 ps.setString(1, "un01");
+				 ps.addBatch();
+				
+				 ps.setString(1, "un02");
+				ps.addBatch();
+				
+				ps.executeBatch();
+			       con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		 }
+	
 
 }
 
