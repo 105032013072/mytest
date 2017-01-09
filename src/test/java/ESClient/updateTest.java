@@ -59,7 +59,7 @@ public class updateTest {
 					 getConnection("jdbc:es://localhost:9300/"+index);
 			 
 			 Statement st = con.createStatement(); 	
-			 st.executeUpdate("UPDATE user SET user_name='aaaa'"); 
+			 st.executeUpdate("UPDATE user SET user_sal='aaaa'"); 
 		       con.close();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -214,6 +214,7 @@ public class updateTest {
 							e.printStackTrace();
 						}
 				 }
+				 
 
 }
 

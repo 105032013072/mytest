@@ -66,7 +66,7 @@ public class MakeTest {
 				    	 /* for (int i=1;i<=ncols;i++) {
 				    		  System.out.print(metaData.getColumnName(i)+": "+rs.getObject(i)+"   ");
 						}*/
-				    	  System.out.println("user_birth:"+rs.getTime("user_birth"));
+				    	  System.out.println("user_birth:"+rs.getTimestamp("user_birth"));
 				    	  System.out.println();//换行
 				      }
 				       rs.close();
@@ -111,9 +111,9 @@ public class MakeTest {
 		 try {
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
-		      	ResultSet rs = st.executeQuery("SELECT  distinct dept_no from user");
+		      	ResultSet rs = st.executeQuery("SELECT  distinct dept_no,user_no from user limit 1,2");
 		      	while(rs.next()){
-		       		System.out.println("dept_no:"+rs.getString("dept"));
+		       		System.out.println("dept_no:"+rs.getString("dept_no")+"  user_no:"+rs.getString("user_no"));
 		       	 }
 		       	 rs.close();
 		       	 con.close();
@@ -130,7 +130,7 @@ public class MakeTest {
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
-		      	ResultSet rs = st.executeQuery("SELECT min(user_salary) as min,MAX(user_salary) as max,count(*) from user where user_salary<2900");
+		      	ResultSet rs = st.executeQuery("SELECT min(user_salary) as min,MAX(user_salary) as max,count(*)from user where user_salary<2900");
 		      	while(rs.next()){
 		       		System.out.println("count(*):"+rs.getFloat("count(*)"));
 		       		System.out.println("min:"+rs.getDouble("min"));
@@ -182,7 +182,6 @@ public void test4(){
 	       	 // get other column information like type
 	       	 while(rs.next()){
 	       		System.out.print(rs.getString("user_no"));
-	       	    
 	       	     System.out.println();
 	       	 }
 	       	 rs.close();

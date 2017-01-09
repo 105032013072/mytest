@@ -142,16 +142,15 @@ public class PreparedStatementTest {
 				 //集群名为：escluster
 				 Connection con = DriverManager.
 						 getConnection("jdbc:es://localhost:9300/"+index);
-				 String sql="UPDATE user SET user_name=? where user_no=?";
+				 String sql="UPDATE user SET user_salary=? where user_no=?";
 				 PreparedStatement ps = con.prepareStatement(sql);
-				 ps.setString(1, "qqq");
-				 ps.setString(2, "un01");
+				 ps.setFloat(1, 2200);
+				 ps.setString(2, "u11");
 				 ps.addBatch();
 				
-				ps.setString(1, "qqq");
-				 ps.setString(2, "un02");
-				ps.addBatch();
-				
+				 ps.setFloat(1, 4200);
+				 ps.setString(2, "u21");
+				 ps.addBatch();
 				ps.executeBatch();
 			       con.close();
 				} catch (Exception e) {

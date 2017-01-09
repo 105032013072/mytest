@@ -17,10 +17,11 @@
                 "type": "string"
             },
             "user_salary": {
-                "type": "long"
+                "type": "double"
             },
             "user_birth":{
-               "type":"date"
+               "type":"date",
+               "format":"yyyy-MM-dd"
             }
         }
     }

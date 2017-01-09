@@ -100,13 +100,19 @@ public class ESClient {
 		//System.out.println(srb.toString());
 		
 		//添加order by
-		for (OrderbyMate orderbyMate : orderby) {
-			srb.addSort(orderbyMate.getField(), SortOrder.valueOf(orderbyMate.getOrderType().toString()));
+		if(orderby!=null){
+			for (OrderbyMate orderbyMate : orderby) {
+				srb.addSort(orderbyMate.getField(), SortOrder.valueOf(orderbyMate.getOrderType().toString()));
+			}
 		}
+			
+		
 		
 		//添加分页信息
-		srb.setFrom(page.getFrom()).setSize(page.getPageSize());
-
+		if(page!=null){
+			srb.setFrom(page.getFrom()).setSize(page.getPageSize());
+		}
+		
   		SearchResponse searchResponse =srb.execute().actionGet();
   		System.out.println(searchResponse.toString());
   		

@@ -65,8 +65,10 @@ public class QueryDirector {
 			
 		}
 		queryBody.setAggregationBuilder(aggregationBuilder);
-		queryBody.setOrderby(obj.getOrderby());
-		queryBody.setPageMate(obj.getLimit());
+		if(aggregationBuilder==null){
+			queryBody.setOrderby(obj.getOrderby());
+			queryBody.setPageMate(obj.getLimit());
+		}
 		queryBody.setQueryBuilder(qb);
 		return queryBody;
 		

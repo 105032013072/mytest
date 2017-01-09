@@ -110,6 +110,7 @@ public class ESStatement implements Statement{
 		
 		//构建resultSet
 		ESResultSet resultSet=resultDirector.construct(response,sqlObj);
+		
 		return resultSet;
 	}
 

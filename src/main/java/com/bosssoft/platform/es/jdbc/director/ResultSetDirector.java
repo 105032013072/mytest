@@ -61,6 +61,13 @@ public class ResultSetDirector {
 			}
 		}
 		
+		
+		
+		if(response.getAggregations()!=null){
+			if(obj.getOrderby().size()!=0) esResultSet.sort(obj.getOrderby());//排序
+			if(obj.getLimit()!=null) esResultSet.page(obj.getLimit());//分页
+		}
+		
 		esResultSet.setTotal(esResultSet.getResultList().size());
 		return esResultSet;
 		

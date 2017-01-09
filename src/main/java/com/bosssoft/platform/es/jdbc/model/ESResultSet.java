@@ -39,6 +39,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bosssoft.platform.es.jdbc.mate.OrderbyMate;
+import com.bosssoft.platform.es.jdbc.mate.PageMate;
+
 /**
  * TODO 存储结果
  *
@@ -48,6 +51,8 @@ import java.util.Map;
 public class ESResultSet implements ResultSet{
 
 	private List<Map<String, Object>> resultList;
+	
+	private List<OrderbyMate> orderby;
 	
 	private int total;
 	
@@ -1942,6 +1947,78 @@ public class ESResultSet implements ResultSet{
 			}
 		}
 	    return name;
+	}
+	
+	public void sort(List<OrderbyMate> orderby){
+		this.orderby=orderby;
+		//冒泡
+		for(int i=0;i<resultList.size()-1;i++){
+			for(int j=0;j<resultList.size()-1-i;j++){
+				if(compare(resultList.get(j),resultList.get(j+1))){//交换
+					Map<String, Object> helper=new HashMap<>();
+					helper=resultList.get(j);
+					resultList.set(j, resultList.get(j+1));
+					resultList.set(j+1, helper);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param map
+	 * @param map2
+	 * @return
+	 */
+	private boolean compare(Map<String, Object> before, Map<String, Object> after) {
+		
+		for (OrderbyMate orderbyMate : orderby) {
+			String field=orderbyMate.getField();
+			String orderType=orderbyMate.getOrderType().toString();
+	
+			if("ASC".equals(orderType)){
+				if(before.get(field)==null) return false;
+				if(after.get(field)==null) return true;
+				
+				if(before.get(field) instanceof String){
+					if(((String)before.get(field)).compareTo((String) after.get(field))>0)return true;
+					else if(((String)before.get(field)).compareTo((String) after.get(field))<0) return false;
+				}else{
+					if(((Double)before.get(field)).compareTo((Double) after.get(field))>0) return true;
+					else if(((Double)before.get(field)).compareTo((Double) after.get(field))<0) return false;
+				}
+			}else{//desc
+				if(before.get(field)==null) return true;
+				if(after.get(field)==null) return false;
+				
+				if(before.get(field) instanceof String){
+					if(((String)before.get(field)).compareTo((String) after.get(field))>0)return false;
+					else if(((String)before.get(field)).compareTo((String) after.get(field))<0) return true;
+				}else{
+					if(((Double)before.get(field)).compareTo((Double) after.get(field))>0) return false;
+					else if(((Double)before.get(field)).compareTo((Double) after.get(field))<0) return true;
+				}
+			}
+		}
+		return false;
+	
+	}
+	
+	/**
+	 * 分页
+	 * @param pageMate
+	 */
+	public void page(PageMate pageMate){
+		  List<Map<String, Object>> newResult=new ArrayList<>();
+		
+		  int start=pageMate.getFrom();
+		  int end=start+pageMate.getPageSize()-1;
+		   
+		  if(end>resultList.size()) end=resultList.size();
+		  for (int i = start ; i <= end; i++) {  
+			  newResult.add(resultList.get(i)) ;  
+		    }  
+		   resultList=newResult ;  
+		  
 	}
 	
 }

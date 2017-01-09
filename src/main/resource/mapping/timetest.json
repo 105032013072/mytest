@@ -1,0 +1,18 @@
+{
+    "timetest": {
+        "properties": {
+            "time_date": {
+                "type": "date",
+                "format":"yyyy-MM-dd"
+            },
+            "time_time": {
+                "type": "date",
+                "format":"HH:mm:ss"
+            },
+            "time_stamp": {
+                "type": "date",
+                "format":"yyyy-MM-dd HH:mm:ss.SSSZ"
+            }
+        }
+    }
+}

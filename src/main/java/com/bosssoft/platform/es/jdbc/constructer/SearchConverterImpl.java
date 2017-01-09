@@ -133,12 +133,7 @@ public class SearchConverterImpl implements SearchConverter{
 		List<OrderbyMate> result=new ArrayList<>();
 		
 		List<SortItem> list=((QuerySpecification)qb).getOrderBy();
-		if(list.size()==0) {//没有指定排序的列，则根据_id 升序
-			OrderbyMate mate=new OrderbyMate();
-			mate.setField("_id");
-			mate.setOrderType(OrderType.ASCENDING);
-			result.add(mate);
-		}else {
+		if(list.size()!=0){
 			for (SortItem sortItem : list) {
 				OrderbyMate mate=new OrderbyMate();
 				mate.setField(parserField(sortItem.getSortKey()));
@@ -160,20 +155,18 @@ public class SearchConverterImpl implements SearchConverter{
 	 * @return
 	 */
 	public PageMate conventLimit(String sql) {
-		PageMate mate=new PageMate();
-		if(!sql.contains("limit")){//没有指定分页，默认返回第一页，每页10条
-			mate.setFrom(0);
-			mate.setPageSize(10);
-		}else{
+		if(sql.contains("limit")){
+			PageMate mate=new PageMate();
 			String limitStr=sql.substring(sql.indexOf("limit"),sql.length()).replaceAll(" ", "");
 			String str=limitStr.substring(5, limitStr.length());
 			String []reslut=str.split(",");
 			
 			mate.setFrom(Integer.valueOf(reslut[0]));
 			mate.setPageSize(Integer.valueOf(reslut[1]));
-		}
+			return mate;
+		}else return null;
 		
-		return mate;
+		
 	}
 
 	/**
