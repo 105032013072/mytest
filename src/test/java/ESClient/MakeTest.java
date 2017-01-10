@@ -59,14 +59,15 @@ public class MakeTest {
 					 
 					 Statement st = con.createStatement(); 	
 					 
-					 ResultSet rs = st.executeQuery("select * from user");
+					 ResultSet rs = st.executeQuery("select * from user order by user_no");
 					 ResultSetMetaData metaData=rs.getMetaData();
 					 int ncols=metaData.getColumnCount();
 				      while(rs.next()){
-				    	 /* for (int i=1;i<=ncols;i++) {
+				    	 for (int i=1;i<=ncols;i++) {
 				    		  System.out.print(metaData.getColumnName(i)+": "+rs.getObject(i)+"   ");
-						}*/
-				    	  System.out.println("user_birth:"+rs.getTimestamp("user_birth"));
+				    		  
+						}
+				    	  //System.out.println("user_birth:"+rs.getTimestamp("user_birth"));
 				    	  System.out.println();//换行
 				      }
 				       rs.close();
@@ -111,9 +112,9 @@ public class MakeTest {
 		 try {
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
-		      	ResultSet rs = st.executeQuery("SELECT  distinct dept_no,user_no from user limit 1,2");
+		      	ResultSet rs = st.executeQuery("SELECT  distinct dept_no,user_salary from user order by dept_no,user_salary desc");
 		      	while(rs.next()){
-		       		System.out.println("dept_no:"+rs.getString("dept_no")+"  user_no:"+rs.getString("user_no"));
+		       		System.out.println("dept_no:"+rs.getString("dept_no")+"  user_salary:"+rs.getFloat("user_salary"));
 		       	 }
 		       	 rs.close();
 		       	 con.close();
@@ -144,13 +145,39 @@ public class MakeTest {
 	 }
 	 
 	 @Test
+	 public void test10(){
+		 try {
+			 //集群名为：escluster
+			 Connection con = DriverManager.
+					 getConnection("jdbc:es://localhost:9300/"+index);
+		      	//ResultSet rs = st.executeQuery("SELECT * FROM uab_agen_item where tfname ='测试3' limit 2,3");
+			 
+			 Statement st = con.createStatement(); 	
+			 
+			 ResultSet rs = st.executeQuery("select * from user where dept_no not in('d0','d1')");
+			 ResultSetMetaData metaData=rs.getMetaData();
+			 int ncols=metaData.getColumnCount();
+		      while(rs.next()){
+		    	  for (int i=1;i<=ncols;i++) {
+		    		  System.out.print(metaData.getColumnName(i)+": "+rs.getObject(i)+"   ");
+				}
+		    	  System.out.println();//换行
+		      }
+		       rs.close();
+		       con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	 }
+	 
+	 @Test
 	 //in
 	 public void test3(){
 		 try {
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
-		      	ResultSet rs = st.executeQuery("SELECT * from user where user_salary in (3202.0,4202.0) order by user_no");
+		      	ResultSet rs = st.executeQuery("SELECT * from user where user_name in ('tom2号','mical1号') order by user_no");
 		      	ResultSetMetaData metaData=rs.getMetaData();
 				 int ncols=metaData.getColumnCount();
 			      while(rs.next()){
@@ -176,14 +203,16 @@ public void test4(){
 	      	
 	      	
 	      	
-	      	ResultSet rs = st.executeQuery("SELECT user_no FROM user where (user_salary=2200 and user_age=20) or (dept_no='d1' and user_age=21)");
+	      	ResultSet rs = st.executeQuery("SELECT * FROM user where not((user_salary=2200 and user_age=20) or (user_birth is null)) order by user_no");
 	       	 ResultSetMetaData rsmd = rs.getMetaData();
-	       	 int nrCols = rsmd.getColumnCount();
-	       	 // get other column information like type
-	       	 while(rs.next()){
-	       		System.out.print(rs.getString("user_no"));
-	       	     System.out.println();
-	       	 }
+	       	ResultSetMetaData metaData=rs.getMetaData();
+			 int ncols=metaData.getColumnCount();
+		      while(rs.next()){
+		    	  for (int i=1;i<=ncols;i++) {
+		    		  System.out.print(metaData.getColumnName(i)+": "+rs.getObject(i)+"   ");
+				}
+		    	  System.out.println();//换行
+		      }
 	       	 rs.close();
 	       	 con.close();
 		} catch (Exception e) {
@@ -199,11 +228,11 @@ public void test4(){
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	
-		      	ResultSet rs = st.executeQuery("SELECT dept_no,count(*) FROM user group by dept_no having count(*)>2");
+		      	ResultSet rs = st.executeQuery("SELECT dept_no,AVG(user_salary)as avgSal FROM user group by dept_no having avgSal>3000 order by dept_no desc ");
 		      	//ResultSet rs = st.executeQuery("SELECT dept_no,max(user_salary) FROM user group by dept_no");
 		       	while(rs.next()){ 
-		       		System.out.print(rs.getString("dept_no")+" ");
-		       		System.out.println(rs.getFloat("count(*)"));
+		       		System.out.print("dept_no: "+rs.getString("dept_no")+" ");
+		       		System.out.println("agvSal: "+rs.getFloat("avgSal"));
 		       	 }
 		       	 rs.close();
 		       	 con.close();

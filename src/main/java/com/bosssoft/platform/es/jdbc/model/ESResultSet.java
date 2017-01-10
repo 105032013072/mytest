@@ -433,7 +433,7 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Date getDate(String columnLabel) throws SQLException {
-		
+		columnLabel=columnLabel.toLowerCase();
 		Map<String,Object> map=resultList.get(index);
 		if(map.get(columnLabel)!=null ){
 		
@@ -475,6 +475,7 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public double getDouble(String columnLabel) throws SQLException {
+		columnLabel=columnLabel.toLowerCase();
 		Map<String,Object> map=resultList.get(index);
 		if(map.get(columnLabel)!=null ){
 		
@@ -517,6 +518,7 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public float getFloat(String columnLabel) throws SQLException {
+		columnLabel=columnLabel.toLowerCase();
 		Map<String,Object> map=resultList.get(index);
 		if(map.get(columnLabel)!=null ){
 		
@@ -550,6 +552,7 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public int getInt(String columnLabel) throws SQLException {
+		columnLabel=columnLabel.toLowerCase();
 		Map<String,Object> map=resultList.get(index);
 		if(map.get(columnLabel)!=null ){
 			String value=String.valueOf(map.get(columnLabel));
@@ -574,6 +577,7 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public long getLong(String columnLabel) throws SQLException {
+		columnLabel=columnLabel.toLowerCase();
 		Map<String,Object> map=resultList.get(index);
 		if(map.get(columnLabel)==null ){
 			String value=String.valueOf(map.get(columnLabel));
@@ -590,11 +594,16 @@ public class ESResultSet implements ResultSet{
 	@Override
 	public ESResultSetMetaData getMetaData() throws SQLException {
 		List<String> result=new ArrayList<>();
-		Map<String,Object> map=resultList.get(0);
-		for (String string : map.keySet()) {
-			result.add(string);
+		if(resultList.size()>0){
+			Map<String,Object> map=resultList.get(0);
+			for (String string : map.keySet()) {
+				result.add(string);
+			}
+			return new ESResultSetMetaData(result);
+		}else{
+			return new ESResultSetMetaData(new ArrayList<>());
 		}
-		return new ESResultSetMetaData(result);
+		
 	}
 
 	/* (non-Javadoc)
@@ -666,6 +675,7 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Object getObject(String columnLabel) throws SQLException {
+		columnLabel=columnLabel.toLowerCase();
 		// TODO Auto-generated method stub
 		Map<String,Object> map=resultList.get(index);
 		//if(map.get(columnLabel)==null )throw new SQLException("column "+columnLabel+" is not found");
@@ -790,6 +800,7 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public short getShort(String columnLabel) throws SQLException {
+		columnLabel=columnLabel.toLowerCase();
 		Map<String,Object> map=resultList.get(index);
 		String value=String.valueOf(map.get(columnLabel));
 		short s=Short.parseShort(value);
@@ -820,6 +831,7 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public String getString(String columnLabel) throws SQLException {
+		columnLabel=columnLabel.toLowerCase();
 		Map<String,Object> map=resultList.get(index);
 		if(map.get(columnLabel)!=null ){
 			String value=String.valueOf(map.get(columnLabel));
@@ -843,6 +855,7 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Time getTime(String columnLabel) throws SQLException {
+		columnLabel=columnLabel.toLowerCase();
 		Map<String,Object> map=resultList.get(index);
 		if(map.get(columnLabel)!=null ){
 		
@@ -884,7 +897,7 @@ public class ESResultSet implements ResultSet{
 	 */
 	@Override
 	public Timestamp getTimestamp(String columnLabel) throws SQLException {
-		
+		columnLabel=columnLabel.toLowerCase();
 		Map<String,Object> map=resultList.get(index);
 		if(map.get(columnLabel)!=null ){
 		

@@ -204,9 +204,9 @@ public class QueryConstructerImpl implements QueryConstructer{
 		String op=nullExpression.getOpration();
 		QueryBuilder qb=null;
 		if("is null".equals(op)){
-			qb=QueryBuilders.existsQuery(nullExpression.getFiled());
+			qb=QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery(nullExpression.getFiled()));
 		}else if("is not null".equals(op)){
-			qb=qb=QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery(nullExpression.getFiled()));
+			qb=QueryBuilders.existsQuery(nullExpression.getFiled());
 		}else throw new SQLException("illegal opreration");
 		return qb;
 	}

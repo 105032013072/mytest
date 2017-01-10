@@ -95,8 +95,8 @@ public class updateTest {
 					 getConnection("jdbc:es://localhost:9300/"+index);
 			 
 			 Statement st = con.createStatement(); 	
-			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age,user_birth) values("
-						+"\'"+"n01"+"\'"+","+"\'"+"newname"+"\'"+","+"\'"+"d3"+"\'"+","+5000+","+38+")";
+			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values("
+						+"\'"+"n01"+"\'"+","+"\'"+"小明"+"\'"+","+"\'"+"d3"+"\'"+","+5000+","+38+")";
 			 st.executeUpdate(sql); 
 		       con.close();
 			} catch (Exception e) {

@@ -11,10 +11,11 @@
                 "type": "string",
                 "boost": 8,
                 "store": true,
-                "analyzer": "ik_max_word"
+                "index": "not_analyzed" 
             },
             "user_no": {
-                "type": "string"
+                "type": "string",
+                "analyzer": "ik_max_word"
             },
             "user_salary": {
                 "type": "double"
