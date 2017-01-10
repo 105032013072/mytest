@@ -109,7 +109,7 @@ public class ESStatement implements Statement{
 		SearchResponse response=esClient.search(queryBody.getQueryBuilder(), queryBody.getAggregationBuilder(),queryBody.getOrderby(),queryBody.getPageMate(), connection.getIndex(), sqlObj.getFrom());
 		
 		//构建resultSet
-		ESResultSet resultSet=resultDirector.construct(response,sqlObj);
+		ESResultSet resultSet=resultDirector.construct(response,sqlObj,connection);
 		
 		return resultSet;
 	}

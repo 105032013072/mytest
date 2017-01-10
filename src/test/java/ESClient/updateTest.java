@@ -59,14 +59,14 @@ public class updateTest {
 					 getConnection("jdbc:es://localhost:9300/"+index);
 			 
 			 Statement st = con.createStatement(); 	
-			 st.executeUpdate("UPDATE user SET user_sal='aaaa'"); 
+			 st.executeUpdate("UPDATE user SET user_name='aaaa' where dept_no='d1'"); 
 		       con.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 	 }
 	 
-	 //更新
+	 //修改
 	 @Test
 	 public void test4(){
 		 try {
@@ -95,8 +95,8 @@ public class updateTest {
 					 getConnection("jdbc:es://localhost:9300/"+index);
 			 
 			 Statement st = con.createStatement(); 	
-			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values("
-						+"\'"+"n01"+"\'"+","+"\'"+"小明"+"\'"+","+"\'"+"d3"+"\'"+","+5000+","+38+")";
+			 String sql="insert into user(user_no,user_name) values("
+						+"\'"+"n01"+"\'"+","+"\'"+"小明"+"\'"+")";
 			 st.executeUpdate(sql); 
 		       con.close();
 			} catch (Exception e) {
@@ -184,11 +184,11 @@ public class updateTest {
 					
 						Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 						Statement st = con.createStatement();
-						//String sql1="delete from user where user_salary>=2200 and user_salary<=2202";
-						//String sql2="delete from  user  where dept_no='dn'";
+						String sql1="delete from user where user_salary>=2200 and user_salary<=2202";
+						String sql2="delete from  user  where dept_no='dn'";
 						String sql3="insert into user(user_no,user_name,dept_no) values ('uu','aaa','ddd') ";
-						//st.addBatch(sql1);
-						//st.addBatch(sql2);
+						st.addBatch(sql1);
+						st.addBatch(sql2);
 						st.addBatch(sql3);
 						st.executeBatch();
 						

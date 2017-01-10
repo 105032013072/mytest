@@ -145,7 +145,7 @@ private String index="demo";
 			 
 			 Statement st = con.createStatement(); 	
 			 
-			 ResultSet rs = st.executeQuery("select * from user where user_birth is null");
+			 ResultSet rs = st.executeQuery("select * from user where dept_no is not null");
 			 ResultSetMetaData metaData=rs.getMetaData();
 			 int ncols=metaData.getColumnCount();
 		      while(rs.next()){

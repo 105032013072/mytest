@@ -29,15 +29,20 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
 
 import com.bosssoft.platform.es.jdbc.statement.ESPreparedStatement;
 import com.bosssoft.platform.es.jdbc.statement.ESStatement;
+import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 /**
  * TODO 此处填写 class 信息
@@ -51,10 +56,32 @@ public class ESConnection implements Connection{
 	
 	private ESClient esClient;
 	
+	private Map<String,Map<String, Object>> indexInfo;//存储该索引下所有类型的字段及其类型
+	
 	
 	public ESConnection(String host,Integer port,String index){
 		this.index=index;
 		esClient=new ESClient(host, port);
+		indexInfo=new HashMap<String, Map<String,Object>>();
+		setIndexInfo(index);
+		
+	}
+	
+	private void setIndexInfo(String index){
+		try {
+			ImmutableOpenMap<String, MappingMetaData> mappings=esClient.getMapping(index);
+			Iterator<ObjectObjectCursor<String, MappingMetaData>> entries=mappings.iterator();
+			 while (entries.hasNext()) {  
+				    ObjectObjectCursor<String, MappingMetaData> entry = entries.next(); 
+				    String key=entry.key;
+				    MappingMetaData mappingMetaData=entry.value;
+				    Map<String, Object> info=(Map<String, Object>) mappingMetaData.getSourceAsMap().get("properties");
+				    indexInfo.put(key, info);
+				} 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 
 	}
 	
 	/* (non-Javadoc)
@@ -575,6 +602,9 @@ public class ESConnection implements Connection{
 		this.esClient = esClient;
 	}
 	
+	public Map<String, Object> getTypeInfo(String type){
+		return indexInfo.get(type);
+	}
 	
 
 }

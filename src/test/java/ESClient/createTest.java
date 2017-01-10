@@ -57,7 +57,7 @@ public class createTest {
 					 getConnection("jdbc:es://localhost:9300/"+index);
 			 Statement st = con.createStatement();
 		      	//ResultSet rs = st.executeQuery("SELECT * FROM uab_agen_item where tfname ='测试3' limit 2,3");
-			 String sql="CREATE TABLE user";
+			 String sql="create table user";
 			 st.executeUpdate(sql);
 			 
 			} catch (Exception e) {

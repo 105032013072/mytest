@@ -15,10 +15,14 @@
 package com.bosssoft.platform.es.jdbc.director;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.elasticsearch.action.search.SearchResponse;
 
 import com.bosssoft.platform.es.jdbc.constructer.ResultSetConstructer;
+import com.bosssoft.platform.es.jdbc.driver.ESConnection;
 import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
 import com.bosssoft.platform.es.jdbc.model.ESResultSet;
 import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
@@ -37,7 +41,7 @@ public class ResultSetDirector {
 		this.constructer=constructer;
 	}
 	
-	public ESResultSet construct(SearchResponse response,SelectSqlObj obj) throws SQLException{
+	public ESResultSet construct(SearchResponse response,SelectSqlObj obj,ESConnection connection) throws SQLException{
 		ESResultSet esResultSet=null;
 		
 		if(response.getAggregations()==null){//没有聚合：
@@ -69,10 +73,22 @@ public class ResultSetDirector {
 		}
 		
 		esResultSet.setTotal(esResultSet.getResultList().size());
+		
+		//构建该type所有列
+		List<String> allcolumn=new ArrayList<>();
+		Map<String,Object> mapping=connection.getTypeInfo(obj.getFrom());
+		for (String string : mapping.keySet()) {
+			allcolumn.add(string);
+		}
+		for(ColumnMate columnMate:obj.getSelectItems()){
+			allcolumn.add(columnMate.getAlias());
+		}
+		esResultSet.setTypeAllColumns(allcolumn);
 		return esResultSet;
 		
 		
 	}
+
 }
 
 /*

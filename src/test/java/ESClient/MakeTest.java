@@ -241,6 +241,24 @@ public void test4(){
 			}
 
 	 }
+	 
+	 
+	 //distinct
+	 @Test
+	 public void test11(){
+		 try {
+			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
+		      	Statement st = con.createStatement();
+		      	ResultSet rs = st.executeQuery("SELECT user_no,user_salary from user order by dept_no,user_salary desc");
+		      	while(rs.next()){
+		       		System.out.println("user_no:"+rs.getString("user_no")+"  user_salary:"+rs.getFloat("user_salary"));
+		       	 }
+		       	 rs.close();
+		       	 con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	 }
 }
 
 /*

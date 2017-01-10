@@ -31,6 +31,8 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.unit.ByteSizeValue;
@@ -83,6 +85,11 @@ public class ESClient {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	//获取mapping
+	public ImmutableOpenMap<String, MappingMetaData> getMapping(String indexName){
+		return client.admin().cluster().prepareState().execute().actionGet().getState().getMetaData().getIndices().get(indexName).getMappings();
 	}
 	
 	//查询
