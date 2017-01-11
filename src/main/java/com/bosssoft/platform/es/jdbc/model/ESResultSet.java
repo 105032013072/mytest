@@ -56,6 +56,8 @@ public class ESResultSet implements ResultSet{
 	
 	private List<String> typeAllColumns;
 	
+	private ESResultSetMetaData metaData;
+	
 	private int total;
 	
 	private int index;
@@ -1969,18 +1971,12 @@ public class ESResultSet implements ResultSet{
 	
 	private String findColumn(int column) throws SQLException{
 		String name=null;
-		Map<String,Object> map=resultList.get(0);
-		if(column>map.keySet().size()) throw new SQLException("the index is over the columnsize");
-		int i=1;
-	    for (String str : map.keySet()) {
-			if(i!=column){
-				i++;
-			}else{
-				name=str;
-				break;
-			}
+		List<String> allcolumn=metaData.getCols();
+		if(column>allcolumn.size()) throw new SQLException("the index is over column size");
+		for(int i=0;i<allcolumn.size();i++){
+			if(i==column-1) name=allcolumn.get(i);
 		}
-	    return name;
+		return name;
 	}
 	
 	public void sort(List<OrderbyMate> orderby){
@@ -2056,23 +2052,16 @@ public class ESResultSet implements ResultSet{
 		   resultList=newResult ;  
 		  
 	}
+	
+	
 
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#getMetaData()
-	 */
+	public void setMetaData(ESResultSetMetaData metaData) {
+		this.metaData = metaData;
+	}
+
 	@Override
 	public ResultSetMetaData getMetaData() throws SQLException {
-		
-		List<String> result=new ArrayList<>();
-		if(resultList.size()>0){
-			Map<String,Object> map=resultList.get(0);
-			for (String string : map.keySet()) {
-				result.add(string);
-			}
-			return new ESResultSetMetaData(result);
-		}else{
-			return new ESResultSetMetaData(new ArrayList<>());
-}
+		return metaData;
 	}
 
 	public List<String> getTypeAllColumns() {

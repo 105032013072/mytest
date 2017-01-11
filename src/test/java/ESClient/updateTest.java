@@ -95,8 +95,12 @@ public class updateTest {
 					 getConnection("jdbc:es://localhost:9300/"+index);
 			 
 			 Statement st = con.createStatement(); 	
-			 String sql="insert into user(user_no,user_name) values("
-						+"\'"+"n01"+"\'"+","+"\'"+"小明"+"\'"+")";
+			/* String sql="insert into user(user_no,user_name) values("
+						+"\'"+"n02"+"\'"+","+"\'"+"小东"+"\'"+")";*/
+			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ('c01','eee','d03',5000,42)";
+			/* User user=new User("b0"+1, "jason"+1+"号", "d"+0, 3200+1, 20+1);
+				String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
+				+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";*/
 			 st.executeUpdate(sql); 
 		       con.close();
 			} catch (Exception e) {
@@ -113,8 +117,8 @@ public class updateTest {
 						 getConnection("jdbc:es://localhost:9300/"+index);
 				 
 				 Statement st = con.createStatement(); 	
-				// String sql="delete from user where dept_no='ddd'";
-				 String sql="delete from user";
+				String sql="delete from user ";
+				 //String sql="delete from user where dept_no is null";
 				 st.executeUpdate(sql); 
 			       con.close();
 				} catch (Exception e) {
@@ -164,10 +168,10 @@ public class updateTest {
 						Statement st = con.createStatement();
 						String sql1="update user set user_name='NewTome' where user_salary>=2200 and user_salary<=2202";
 						String sql2="update user set dept_no='dn' where dept_no='d2'";
-						//String sql3="insert into user(user_no,user_name,dept_no) values ('uu','aaa','ddd') ";
+						String sql3="insert into user(user_no,user_name,dept_no) values ('uu','aaa','ddd') ";
 						st.addBatch(sql1);
 						st.addBatch(sql2);
-						//st.addBatch(sql3);
+						st.addBatch(sql3);
 						st.executeBatch();
 						
 						

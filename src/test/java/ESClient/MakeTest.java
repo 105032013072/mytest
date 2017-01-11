@@ -89,7 +89,7 @@ public class MakeTest {
 			 
 			 Statement st = con.createStatement(); 	
 			 
-			 ResultSet rs = st.executeQuery("select * from user where dept_no='d0' and user_salary=3202");
+			 ResultSet rs = st.executeQuery("select * from user where dept_no='d0' and user_salary=5202");
 			 ResultSetMetaData metaData=rs.getMetaData();
 			 int ncols=metaData.getColumnCount();
 		      while(rs.next()){
@@ -132,11 +132,16 @@ public class MakeTest {
 		      	Statement st = con.createStatement();
 		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
 		      	ResultSet rs = st.executeQuery("SELECT min(user_salary) as min,MAX(user_salary) as max,count(*)from user where user_salary<2900");
-		      	while(rs.next()){
-		       		System.out.println("count(*):"+rs.getFloat("count(*)"));
-		       		System.out.println("min:"+rs.getDouble("min"));
-		       		System.out.println("max:"+rs.getDouble("max"));
-		       	 }
+		      	ResultSetMetaData metaData=rs.getMetaData();
+				 int ncols=metaData.getColumnCount();
+			      while(rs.next()){
+			    	 for (int i=1;i<=ncols;i++) {
+			    		  System.out.print(metaData.getColumnName(i)+": "+rs.getObject(i)+"   ");
+			    		  
+					}
+			    	  //System.out.println("user_birth:"+rs.getTimestamp("user_birth"));
+			    	  System.out.println();//换行
+			      }
 		       	 rs.close();
 		       	 con.close();
 			} catch (Exception e) {

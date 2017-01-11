@@ -14,15 +14,10 @@
                 "index": "not_analyzed" 
             },
             "user_no": {
-                "type": "string",
-                "analyzer": "ik_max_word"
+                "type": "string"
             },
             "user_salary": {
                 "type": "double"
-            },
-            "user_birth":{
-               "type":"date",
-               "format":"yyyy-MM-dd"
             }
         }
     }

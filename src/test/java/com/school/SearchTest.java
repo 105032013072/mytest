@@ -91,7 +91,7 @@ private String index="demo";
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
-		      	ResultSet rs = st.executeQuery("SELECT * from user where user_name in ('tom2号','mical1号') order by user_no");
+		      	ResultSet rs = st.executeQuery("SELECT user_no,user_name from user where user_name in ('tom2号','mical1号') order by user_no");
 		      	ResultSetMetaData metaData=rs.getMetaData();
 				 int ncols=metaData.getColumnCount();
 			      while(rs.next()){
@@ -145,7 +145,7 @@ private String index="demo";
 			 
 			 Statement st = con.createStatement(); 	
 			 
-			 ResultSet rs = st.executeQuery("select * from user where dept_no is not null");
+			 ResultSet rs = st.executeQuery("select * from user where user_birth is not null");
 			 ResultSetMetaData metaData=rs.getMetaData();
 			 int ncols=metaData.getColumnCount();
 		      while(rs.next()){

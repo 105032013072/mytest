@@ -28,7 +28,8 @@ public class ESResultSetMetaData implements ResultSetMetaData{
 
 	private List<String> cols;
 	
-
+    private int ncols;
+	
 	public ESResultSetMetaData(List<String> cols){
 		this.cols=cols;
 	}
@@ -41,6 +42,9 @@ public class ESResultSetMetaData implements ResultSetMetaData{
 		return false;
 	}
 
+	public List<String> getCols() {
+		return cols;
+	}
 	/* (non-Javadoc)
 	 * @see java.sql.Wrapper#unwrap(java.lang.Class)
 	 */
@@ -74,7 +78,7 @@ public class ESResultSetMetaData implements ResultSetMetaData{
 	@Override
 	public int getColumnCount() throws SQLException {
 		
-		return cols.size();
+		return ncols;
 	}
 
 	/* (non-Javadoc)
@@ -237,6 +241,12 @@ public class ESResultSetMetaData implements ResultSetMetaData{
 	public boolean isWritable(int arg0) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	public int getNcols() {
+		return ncols;
+	}
+	public void setNcols(int ncols) {
+		this.ncols = ncols;
 	}
 
 }

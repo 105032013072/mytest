@@ -32,6 +32,7 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.InternalNumericMetricsAggregation;
 import org.elasticsearch.search.aggregations.metrics.max.InternalMax;
 
+import com.bosssoft.platform.es.jdbc.driver.ESConnection;
 import com.bosssoft.platform.es.jdbc.enumeration.AggType;
 import com.bosssoft.platform.es.jdbc.mate.AggValue;
 import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
@@ -40,6 +41,8 @@ import com.bosssoft.platform.es.jdbc.mate.Inequality;
 import com.bosssoft.platform.es.jdbc.mate.ResultMate;
 import com.bosssoft.platform.es.jdbc.model.ConditionExp;
 import com.bosssoft.platform.es.jdbc.model.ESResultSet;
+import com.bosssoft.platform.es.jdbc.model.ESResultSetMetaData;
+import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 import com.facebook.presto.sql.tree.DoubleLiteral;
 import com.facebook.presto.sql.tree.LongLiteral;
 import com.facebook.presto.sql.tree.StringLiteral;
@@ -406,6 +409,43 @@ public class ResultSetConstructerImpl implements ResultSetConstructer{
 		}
 		return null;
 	}
+
+	/**
+	 * 
+	 * 构建该type所有列
+	 */
+	@Override
+	public void buildAllColumn(ESResultSet resultSet, SelectSqlObj obj,
+			ESConnection connection) {
+		List<String> allcolumn=new ArrayList<>();
+		Map<String,Object> mapping=connection.getTypeInfo(obj.getFrom());
+		for (String string : mapping.keySet()) {
+			allcolumn.add(string);
+		}
+		for(ColumnMate columnMate:obj.getSelectItems()){
+			allcolumn.add(columnMate.getAlias());
+		}
+		resultSet.setTypeAllColumns(allcolumn);
+	}
+	
+	public void buildMetaDta(ESResultSet resultSet, SelectSqlObj obj,ESConnection connection){
+		List<String> allcolumn=new ArrayList<>();
+		if("*".equals(obj.getSelectItems().get(0).getName())){
+			
+			Map<String,Object> mapping=connection.getTypeInfo(obj.getFrom());
+			for (String string : mapping.keySet()) {
+				allcolumn.add(string);
+			}
+			
+		}else{
+		   for (ColumnMate columnMate : obj.getSelectItems()) {
+			allcolumn.add(columnMate.getAlias());
+		}  
+	   }  
+		ESResultSetMetaData metaData=new ESResultSetMetaData(allcolumn);
+		metaData.setNcols(allcolumn.size());
+		resultSet.setMetaData(metaData);
+		}
 }
 
 /*

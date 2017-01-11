@@ -104,7 +104,7 @@ public class ESClient {
 			srb.setQuery(queryBuilder);
 		}
 		
-		//System.out.println(srb.toString());
+		
 		
 		//添加order by
 		if(orderby!=null){
@@ -118,9 +118,16 @@ public class ESClient {
 		//添加分页信息
 		if(page!=null){
 			srb.setFrom(page.getFrom()).setSize(page.getPageSize());
+		}else{
+			srb.setFrom(0).setSize(200);
 		}
 		
+		
   		SearchResponse searchResponse =srb.execute().actionGet();
+  		
+  		System.out.println("请求体：");
+  		System.out.println(srb.toString());
+  		System.out.println("结果体：");
   		System.out.println(searchResponse.toString());
   		
   		return searchResponse;

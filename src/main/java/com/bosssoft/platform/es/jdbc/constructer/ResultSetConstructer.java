@@ -22,9 +22,11 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
 
+import com.bosssoft.platform.es.jdbc.driver.ESConnection;
 import com.bosssoft.platform.es.jdbc.mate.ColumnMate;
 import com.bosssoft.platform.es.jdbc.model.ConditionExp;
 import com.bosssoft.platform.es.jdbc.model.ESResultSet;
+import com.bosssoft.platform.es.jdbc.model.SelectSqlObj;
 
 /**
  * TODO 此处填写 class 信息
@@ -45,6 +47,10 @@ public interface ResultSetConstructer {
 	 public ESResultSet constructAggregation(Aggregations aggregations);
 	 
 	 public void resolveHaving(ESResultSet resultSet,ConditionExp having) throws SQLException;
+	 
+	 public void buildAllColumn(ESResultSet resultSet,SelectSqlObj obj,ESConnection connection);
+	 
+	 public void buildMetaDta(ESResultSet resultSet, SelectSqlObj obj,ESConnection connection);
 
 }
 

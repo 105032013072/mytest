@@ -75,15 +75,9 @@ public class ResultSetDirector {
 		esResultSet.setTotal(esResultSet.getResultList().size());
 		
 		//构建该type所有列
-		List<String> allcolumn=new ArrayList<>();
-		Map<String,Object> mapping=connection.getTypeInfo(obj.getFrom());
-		for (String string : mapping.keySet()) {
-			allcolumn.add(string);
-		}
-		for(ColumnMate columnMate:obj.getSelectItems()){
-			allcolumn.add(columnMate.getAlias());
-		}
-		esResultSet.setTypeAllColumns(allcolumn);
+		constructer.buildAllColumn(esResultSet, obj, connection);
+		constructer.buildMetaDta(esResultSet, obj, connection);
+		
 		return esResultSet;
 		
 		

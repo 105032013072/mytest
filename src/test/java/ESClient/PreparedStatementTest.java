@@ -109,7 +109,7 @@ public class PreparedStatementTest {
 				 String sql="UPDATE user SET user_name=? where user_no=?";
 				 PreparedStatement ps = con.prepareStatement(sql);
 				 ps.setString(1, "newName");
-				 ps.setString(2, "uaaaa");
+				 ps.setString(2, "uuuuu02 ");
 				ps.executeUpdate();
 			       con.close();
 				} catch (Exception e) {
@@ -127,7 +127,7 @@ public class PreparedStatementTest {
 						 getConnection("jdbc:es://localhost:9300/"+index);
 				 String sql="delete from  user  where user_no=?";
 				 PreparedStatement ps = con.prepareStatement(sql);
-				 ps.setString(1, "uaaaa");
+				 ps.setString(1, "uuuuu02");
 				ps.executeUpdate();
 			       con.close();
 				} catch (Exception e) {
@@ -145,11 +145,11 @@ public class PreparedStatementTest {
 				 String sql="UPDATE user SET user_salary=? where user_no=?";
 				 PreparedStatement ps = con.prepareStatement(sql);
 				 ps.setFloat(1, 2200);
-				 ps.setString(2, "u11");
+				 ps.setString(2, "b11");
 				 ps.addBatch();
 				
 				 ps.setFloat(1, 4200);
-				 ps.setString(2, "u21");
+				 ps.setString(2, "b21");
 				 ps.addBatch();
 				ps.executeBatch();
 			       con.close();
@@ -167,14 +167,14 @@ public class PreparedStatementTest {
 				 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values(?,?,?,?,?)";
 				 PreparedStatement ps = con.prepareStatement(sql);
 				 ps.setString(1, "un01");
-				 ps.setString(2, "aaaa");
+				 ps.setString(2, "ccc");
 				 ps.setString(3, "d3");
 				 ps.setFloat(4, 6000);
 				 ps.setInt(5, 39);
 				ps.addBatch();
 				
 				ps.setString(1, "un02");
-				 ps.setString(2, "bbbb");
+				 ps.setString(2, "dddd");
 				 ps.setString(3, "d3");
 				 ps.setFloat(4, 6000);
 				 ps.setInt(5, 39);
