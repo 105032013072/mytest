@@ -73,7 +73,7 @@ private String index="demo";
 		 try {
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
-		      	ResultSet rs = st.executeQuery("SELECT  distinct dept_no,user_salary from user order by dept_no,user_salary desc");
+		      	ResultSet rs = st.executeQuery("SELECT distinct dept_no,user_salary from user where user_salary>3000 order by dept_no,user_salary desc");
 		      	while(rs.next()){
 		       		System.out.println("dept_no:"+rs.getString("dept_no")+"  user_salary:"+rs.getFloat("user_salary"));
 		       	 }
@@ -91,7 +91,7 @@ private String index="demo";
 			 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 		      	Statement st = con.createStatement();
 		      	//ResultSet rs = st.executeQuery("SELECT count(user_salary) as allmoney,min(user_salary) as min,MAX(user_salary) as max,sum(user_salary) as sum,avg(user_salary) as avg from user");
-		      	ResultSet rs = st.executeQuery("SELECT user_no,user_name from user where user_name in ('tom2号','mical1号') order by user_no");
+		      	ResultSet rs = st.executeQuery("SELECT user_no,user_name from user where user_salary in (6000.0,2200.0) order by user_no");
 		      	ResultSetMetaData metaData=rs.getMetaData();
 				 int ncols=metaData.getColumnCount();
 			      while(rs.next()){
@@ -180,6 +180,30 @@ private String index="demo";
 					e.printStackTrace();
 				}
 
+		 }
+		 
+			//分页
+		 @Test
+		 public void test6(){
+			 try {
+		 		 Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
+		 	      	Statement st = con.createStatement();
+		 	      
+		 	      	ResultSet rs = st.executeQuery("SELECT * FROM user order by user_no limit 3,3");
+		 	       	 ResultSetMetaData rsmd = rs.getMetaData();
+		 	       	ResultSetMetaData metaData=rs.getMetaData();
+		 			 int ncols=metaData.getColumnCount();
+		 		      while(rs.next()){
+		 		    	  for (int i=1;i<=ncols;i++) {
+		 		    		  System.out.print(metaData.getColumnName(i)+": "+rs.getObject(i)+"   ");
+		 				}
+		 		    	  System.out.println();//换行
+		 		      }
+		 	       	 rs.close();
+		 	       	 con.close();
+		 		} catch (Exception e) {
+		 			e.printStackTrace();
+		 		}
 		 }
 	 
 }

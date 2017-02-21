@@ -7,13 +7,13 @@ public class User {
   
   private String deptNo;
   
-  private Integer userSalary;
+  private Double userSalary;
   
   private Integer userAge ;
   
   
 
-public User(String userNo, String userName, String deptNo, Integer userSalary, Integer userAge) {
+public User(String userNo, String userName, String deptNo, Double userSalary, Integer userAge) {
 	super();
 	this.userNo = userNo;
 	this.userName = userName;
@@ -48,13 +48,19 @@ public void setDeptNo(String deptNo) {
 	this.deptNo = deptNo;
 }
 
-public Integer getUserSalary() {
+
+
+public Double getUserSalary() {
 	return userSalary;
 }
 
-public void setUserSalary(Integer userSalary) {
+
+
+public void setUserSalary(Double userSalary) {
 	this.userSalary = userSalary;
 }
+
+
 
 public Integer getUserAge() {
 	return userAge;

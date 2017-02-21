@@ -2012,9 +2012,12 @@ public class ESResultSet implements ResultSet{
 				if(before.get(field) instanceof String){
 					if(((String)before.get(field)).compareTo((String) after.get(field))>0)return true;
 					else if(((String)before.get(field)).compareTo((String) after.get(field))<0) return false;
-				}else{
+				}else if(before.get(field) instanceof Double){
 					if(((Double)before.get(field)).compareTo((Double) after.get(field))>0) return true;
 					else if(((Double)before.get(field)).compareTo((Double) after.get(field))<0) return false;
+				}else{
+					if(((Long)before.get(field)).compareTo((Long) after.get(field))>0) return true;
+					else if(((Long)before.get(field)).compareTo((Long) after.get(field))<0) return false;
 				}
 			}else{//desc
 				if(before.get(field)==null) return true;
@@ -2023,9 +2026,12 @@ public class ESResultSet implements ResultSet{
 				if(before.get(field) instanceof String){
 					if(((String)before.get(field)).compareTo((String) after.get(field))>0)return false;
 					else if(((String)before.get(field)).compareTo((String) after.get(field))<0) return true;
-				}else{
+				}else if(before.get(field) instanceof Double){
 					if(((Double)before.get(field)).compareTo((Double) after.get(field))>0) return false;
 					else if(((Double)before.get(field)).compareTo((Double) after.get(field))<0) return true;
+				}else{
+					if(((Long)before.get(field)).compareTo((Long) after.get(field))>0) return false;
+					else if(((Long)before.get(field)).compareTo((Long) after.get(field))<0) return true;
 				}
 			}
 		}

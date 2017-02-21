@@ -81,12 +81,12 @@ public class Mytest{
 	@Test
 	public void testInsert(){
 		try{
-			Connection con = DriverManager.getConnection("jdbc:sql4es://localhost:9300/"+index+"?cluster.name=escluster");
+			Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 			Statement st = con.createStatement();
 			/*String sql="insert into user(user_no,user_name,deptNO,user_salary,user_age) values"+
 			            "('s002','jon','d0',3500,12)";*/
 			
-			User user=new User("u15"+3, "小明", "d"+1, 3200, 20+1);
+			User user=new User("u3"+0, "小明", "d"+3, 6000.0, 40+1);
 			String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values("
 			+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
 			System.out.println(sql);
@@ -103,19 +103,19 @@ public class Mytest{
 			Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index+"?cluster.name=escluster");
 			Statement st = con.createStatement();
 			for(int i=0;i<3;i++){
-				User user=new User("u0"+i, "jason"+i+"号", "d"+0, 3200+i, 20+i);
+				User user=new User("u0"+i, "jason"+i+"号", "d"+0, 3200.0+i, 20+i);
 				String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
 				+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
 				st.addBatch(sql);
 			}
 			for(int i=0;i<3;i++){
-				User user=new User("u1"+i, "tom"+i+"号", "d"+1, 2200+i, 20+i);
+				User user=new User("u1"+i, "tom"+i+"号", "d"+1, 2200.0+i, 20+i);
 				String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
 				+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
 				st.addBatch(sql);
 			}
 			for(int i=0;i<3;i++){
-				User user=new User("u2"+i, "mical"+i+"号", "d"+2, 4200+i, 20+i);
+				User user=new User("u2"+i, "mical"+i+"号", "d"+2, 4200.0+i, 20+i);
 				String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
 				+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
 				st.addBatch(sql);

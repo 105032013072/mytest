@@ -36,8 +36,7 @@ public class ESTest {
 	@Before
 	public void init(){
 		try{
-			Settings.Builder settingsBuilder = Settings.settingsBuilder();
-			Settings settings = settingsBuilder.build();
+			Settings settings = Settings.settingsBuilder().build();
 		 client = TransportClient.builder().settings(settings).build()
 				.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"),9300));
 		}catch(Exception e){

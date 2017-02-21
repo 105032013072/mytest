@@ -97,7 +97,7 @@ public class updateTest {
 			 Statement st = con.createStatement(); 	
 			/* String sql="insert into user(user_no,user_name) values("
 						+"\'"+"n02"+"\'"+","+"\'"+"小东"+"\'"+")";*/
-			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ('c01','eee','d03',5000,42)";
+			 String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ('u31','小东','d3',6000,42)";
 			/* User user=new User("b0"+1, "jason"+1+"号", "d"+0, 3200+1, 20+1);
 				String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
 				+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";*/
@@ -117,7 +117,7 @@ public class updateTest {
 						 getConnection("jdbc:es://localhost:9300/"+index);
 				 
 				 Statement st = con.createStatement(); 	
-				String sql="delete from user ";
+				String sql="delete from user where dept_no='d03'";
 				 //String sql="delete from user where dept_no is null";
 				 st.executeUpdate(sql); 
 			       con.close();
@@ -134,19 +134,19 @@ public class updateTest {
 				Connection con = DriverManager.getConnection("jdbc:es://localhost:9300/"+index);
 				Statement st = con.createStatement();
 				for(int i=0;i<3;i++){
-					User user=new User("u0"+i, "jason"+i+"号", "d"+0, 3200+i, 20+i);
+					User user=new User("u0"+i, "jason"+i+"号", "d"+0, 3200.0+i, 20+i);
 					String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
 					+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
 					st.addBatch(sql);
 				}
 				for(int i=0;i<3;i++){
-					User user=new User("u1"+i, "tom"+i+"号", "d"+1, 2200+i, 20+i);
+					User user=new User("u1"+i, "tom"+i+"号", "d"+1, 2200.0+i, 20+i);
 					String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
 					+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
 					st.addBatch(sql);
 				}
 				for(int i=0;i<3;i++){
-					User user=new User("u2"+i, "mical"+i+"号", "d"+2, 4200+i, 20+i);
+					User user=new User("u2"+i, "mical"+i+"号", "d"+2, 4200.0+i, 20+i);
 					String sql="insert into user(user_no,user_name,dept_no,user_salary,user_age) values ("
 					+"\'"+user.getUserNo()+"\'"+","+"\'"+user.getUserName()+"\'"+","+"\'"+user.getDeptNo()+"\'"+","+user.getUserSalary()+","+user.getUserAge()+")";
 					st.addBatch(sql);
