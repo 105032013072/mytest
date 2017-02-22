@@ -24,8 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.bosssoft.platform.es.jdbc.enumeration.AggType;
-
-import Test.pojo.User;
+import com.pojo.User;
 
 /**
  * TODO 开发测试类

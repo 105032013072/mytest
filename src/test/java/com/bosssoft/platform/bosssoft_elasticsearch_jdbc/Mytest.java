@@ -1,4 +1,4 @@
-package com.bosssoft.platform.bosssoft_elasticsearch_jdbc_24;
+package com.bosssoft.platform.bosssoft_elasticsearch_jdbc;
 
 import static org.junit.Assert.*;
 
@@ -12,8 +12,9 @@ import java.sql.Statement;
 import org.junit.Before;
 import org.junit.Test;
 
-import Test.pojo.Staff;
-import Test.pojo.User;
+import com.pojo.Staff;
+import com.pojo.User;
+
 
 public class Mytest{
 	

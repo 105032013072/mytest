@@ -1,4 +1,4 @@
-package com.bosssoft.platform.bosssoft_elasticsearch_jdbc_24;
+package com.bosssoft.platform.bosssoft_elasticsearch_jdbc;
 
 import static org.junit.Assert.*;
 
