@@ -264,7 +264,7 @@ public class ESStatement implements Statement{
 	 */
 	@Override
 	public void clearBatch() throws SQLException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

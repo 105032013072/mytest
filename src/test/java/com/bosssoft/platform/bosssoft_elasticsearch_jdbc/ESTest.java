@@ -38,7 +38,8 @@ public class ESTest {
 		try{
 			Settings settings = Settings.settingsBuilder().build();
 		 client = TransportClient.builder().settings(settings).build()
-				.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"),9300));
+				//.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"),9300));
+		 .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("192.168.10.41"),9300));
 		}catch(Exception e){
 			e.printStackTrace();
 		}

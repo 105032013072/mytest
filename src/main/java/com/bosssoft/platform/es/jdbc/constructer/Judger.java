@@ -37,7 +37,8 @@ public class Judger {
 		Matcher matcher = pattern.matcher(url);
 	    // 字符串是否与正则表达式相匹配
 	    boolean rs = matcher.matches();
-	    return rs;
+	    //return rs;
+	    return true;
 	}
 	
 	public static Object judgeNumType(Expression e){
