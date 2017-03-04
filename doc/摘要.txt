@@ -1,0 +1,14 @@
+   There no doubt that  the age of the Internet have arrived and Almost everyone is using the product of 
+Internet.For the internet products,the more people use, the more data and the greater pressure to bear in terms of performance .
+In order to make the product still have efficient search performance In the case of massive data,more and more Internet products combined with elasticsearch
+Compared to Oracle and other databases, elasticsearch has obvious advantages in query performance.Moreover, elasticsearch can also be used for data analysis.
+So,elasticsearch will be widely used because of the big data.
+   Elasticsearch JDBC (hereinafter referred to as ES JDBC)is an API whitch is aimed at using elasticsearch in java development.It encapsulates the basic operation of elasticsearch
+including adding、deleteing、modifing 、searching data and the creating、altering table。 its interface is presented in a form similar to JDBC
+   This article first analyzes the current situation and development trend of ES JDBC in the future,then describing the significance of the development of ES JDBC,
+at the same time, it also introduces the related technology;after that is the requirement analysis about ES JDBC,including feasibility analysis and functional analysis;
+followed by the design of ES JDBC and the realization of each module.At last,do a summary for this work.
+   ES JDBC development platform is eclipse and its JDK version is jdk1.8.
+   ES JDBC simplifies the operation of elasticsearch and it reduces the workload of development,thus making the development cycle shorter.The form of JDBC also facilitates the use of developers.
+
+
