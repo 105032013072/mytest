@@ -1,0 +1,15 @@
+本文以elasticsearch在java开发中的应用为研究方向，对elasticsearch现阶段的应用情况以及未来的发展趋势进行了研究，
+通过将elasticsearch和关系型数据库进行对比，分析elasticsearch在大数据时代下的优势，同时对elasticsearch java API的
+使用以及JDBC接口封装技术进行深入学习。以简化elasticsearch java开发、降低elasticsearch使用门槛为目的，对
+elasticsearch java API进行二次封装，开发了Elasticsearch JDBC（以下简称ES JDBC）。
+ES JDBC提供了对数据的增删改查以及表的创建修改，以类似于JDBC的形式呈现调用接口。
+本文遵循软件工程的思想，对ES JDBC进行了需求分析，从而确定功能模块，在此基础上，给出ES JDBC的整体结构以及各个功能模块的
+详细设计，最后对本次课题的难点以及存在的问题进行分析总结。本次开发平台为eclipse,采用maven框架，所依赖的jdk版本是jdk1.8
+
+
+This article  studies the application of elasticsearch and its development trend in the future  based on the application of elasticsearch in java development,analysing the advantages of elasticsearch in the era of big data through making comparison with relational database and studying about the using of elasticsearch java API and the technology of packaging JDBC interface.It developed Elasticsearch JDBC (hereinafter referred to as ES JDBC) by packaging  elasticsearch java API in order to simplify the using of elasticsearch.
+ES JDBC encapsulates the basic operation of elasticsearch including adding,deleteing,modifing,searching data and the creating,altering table.Its interface is presented in a form similar to JDBC.
+This article making demand analysis for ES JDBC,thus determing the function module and the overall structure of ES JDBC,
+including detailed design of each functional module.Last it analyzes the difficulties and existing problems about this work. The development platform is eclipse,using the Maven framework, the JDK version is dependent on JDK1.8.
+
+
