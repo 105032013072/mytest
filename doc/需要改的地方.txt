@@ -16,4 +16,4 @@
 15.代码小5号或6号  代码的大括号一对第一对齐，类似于C的格式,不是java
 16.页眉页脚距离的设置（可以居中的）
 
-ESDriver
+Elasticsearch创建表的时候需要为该表配置mapping，由于mapping需要组织成json格式，所以配置文件的方式为表设置mapping。
